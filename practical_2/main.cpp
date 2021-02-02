@@ -3,12 +3,13 @@
 using namespace sf;
 using namespace std;
 
-const Keyboard::Key controls[4] = 
+const Keyboard::Key controls[5] = 
 {
     Keyboard::A,   // Player1 UP
     Keyboard::Z,   // Player1 Down
     Keyboard::K,  // Player 2 UP
-    Keyboard::M // Player 2 Down
+    Keyboard::M, // Player 2 Down
+    Keyboard::P // Enable 2 Players
 };
 
 const float ballRadius = 10.f;
@@ -18,11 +19,13 @@ const float paddleSpeed = 500.f;
 
 Vector2f ballVelocity;
 bool server = false;
+bool twoPlayersMode = false;
 sf::Font font;
 sf::Text scoreTextLeft;
 sf::RectangleShape net;
 int scoreLeft = 0;
 sf::Text scoreTextRigth;
+sf::Text playerMode;
 int scoreRight = 0;
 const Vector2f paddleSize(25.f, 100.f);
 const Vector2f netSize(1.f, gameHeight);
@@ -60,18 +63,23 @@ void Load()
     // Set text element to use font
     scoreTextLeft.setFont(font);
     scoreTextRigth.setFont(font);
+    playerMode.setFont(font);
     // Set the character size to 24 pixels
     scoreTextLeft.setCharacterSize(24);
     scoreTextRigth.setCharacterSize(24);
+    playerMode.setCharacterSize(16);
     // Set the string text
     scoreTextLeft.setString("0");
     scoreTextRigth.setString("0");
+    playerMode.setString("AI Mode");
     // Set text color
     scoreTextLeft.setFillColor(sf::Color::White);
     scoreTextRigth.setFillColor(sf::Color::White);
+    playerMode.setFillColor(sf::Color::White);
     // Set text position
     scoreTextLeft.setPosition((gameWidth * .5f / 2) - (scoreTextLeft.getLocalBounds().width * .5f), 0);
     scoreTextRigth.setPosition((gameWidth * .5f + gameWidth * .5f / 2) - (scoreTextRigth.getLocalBounds().width * .5f), 0);
+    playerMode.setPosition(10, 0);
 }
 
 void Reset()
@@ -90,11 +98,6 @@ void Reset()
     scoreTextLeft.setString(to_string(scoreLeft));
     scoreTextRigth.setPosition((gameWidth * .5f + gameWidth * .5f / 2) - (scoreTextRigth.getLocalBounds().width * .5f),0);
     scoreTextRigth.setString(to_string(scoreRight));
-}
-
-void AILoop()
-{
-
 }
 
 void Update(RenderWindow& window)
@@ -132,11 +135,38 @@ void Update(RenderWindow& window)
     {
         direction++;
     }    
-    if (paddles[1].getPosition().y > 35 && paddles[1].getPosition().y + paddleSize.y / 2 > by && bx > gameWidth / 2)
+
+    if (Keyboard::isKeyPressed(controls[4]))
+    {
+        twoPlayersMode = { (twoPlayersMode ? false : true) };
+    }
+
+    if (twoPlayersMode == false)
+    {
+        playerMode.setString("AI Mode");
+    }
+
+    else if (twoPlayersMode == true)
+    {
+        playerMode.setString("2 Players Mode");
+    }
+
+    // Enables second player to move the right paddle if twoPlayersMode is enable
+    if (Keyboard::isKeyPressed(controls[2]) && paddles[1].getPosition().y > 35 && twoPlayersMode == true)
+    {
+        direction2--;
+    }
+    if (Keyboard::isKeyPressed(controls[3]) && paddles[1].getPosition().y < gameHeight - 65 && twoPlayersMode == true)
+    {
+        direction2++;
+    }
+
+    // Enables AI to play as the right player if twoPlayersMode is disabled
+    if (paddles[1].getPosition().y > 35 && paddles[1].getPosition().y + paddleSize.y / 2 > by && bx > gameWidth / 2 && twoPlayersMode == false)
     {
         direction2--;    
     }
-    if (paddles[1].getPosition().y < gameHeight - 65 && paddles[1].getPosition().y + paddleSize.y / 2 < by && bx > gameWidth / 2)
+    if (paddles[1].getPosition().y < gameHeight - 65 && paddles[1].getPosition().y + paddleSize.y / 2 < by && bx > gameWidth / 2 && twoPlayersMode == false)
     {
         direction2++;
     }
@@ -204,6 +234,7 @@ void Render(RenderWindow &window)
     window.draw(ball);
     window.draw(scoreTextLeft);
     window.draw(scoreTextRigth);
+    window.draw(playerMode);
     window.draw(net);
 }
 
