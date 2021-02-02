@@ -136,7 +136,7 @@ void Update(RenderWindow& window)
         direction++;
     }    
 
-    if (Keyboard::isKeyPressed(controls[4]))
+    if (event.key.code == sf::Keyboard::P)
     {
         twoPlayersMode = { (twoPlayersMode ? false : true) };
     }
@@ -194,7 +194,7 @@ void Update(RenderWindow& window)
     }
 
     // Ball is inline or behind paddle and ball is below top edge of paddle and ball is above bottom edge of paddle
-    else if (bx < paddleSize.x + 15 && by > paddles[0].getPosition().y - (paddleSize.y * 0.6) && by < paddles[0].getPosition().y + (paddleSize.y * 0.6))
+    else if (bx < paddleSize.x + 15 && by > paddles[0].getPosition().y - (paddleSize.y * 0.40) && by < paddles[0].getPosition().y + (paddleSize.y * 0.60))
     {
         // Bounce off left paddle
         ballVelocity.x *= -1.05f;
@@ -203,7 +203,7 @@ void Update(RenderWindow& window)
     }
 
     // Ball is inline or behind paddle and ball is below top edge of paddle and ball is above bottom edge of paddle
-    else if (bx > paddleSize.x + 735 && by > paddles[1].getPosition().y - (paddleSize.y * 0.6) && by < paddles[1].getPosition().y + (paddleSize.y * 0.6))
+    else if (bx > paddleSize.x + 735 && by > paddles[1].getPosition().y - (paddleSize.y * 0.40) && by < paddles[1].getPosition().y + (paddleSize.y * 0.60))
     {
         // Bounce off right paddle
         ballVelocity.x *= -1.05f;
