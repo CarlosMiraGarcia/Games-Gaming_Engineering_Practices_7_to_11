@@ -15,6 +15,7 @@ const float ballRadius = 10.f;
 const int gameWidth = 800;
 const int gameHeight = 600;
 const float paddleSpeed = 500.f;
+
 Vector2f ballVelocity;
 bool server = false;
 sf::Font font;
@@ -91,11 +92,20 @@ void Reset()
     scoreTextRigth.setString(to_string(scoreRight));
 }
 
+void AILoop()
+{
+
+}
+
 void Update(RenderWindow& window)
 {
+    // Get ball position
+    const float bx = ball.getPosition().x;
+    const float by = ball.getPosition().y;
     // Reset clock, recalculate deltatime
     static Clock clock;
     float dt = clock.restart().asSeconds();
+
     // Check and consume events
     Event event;
     while (window.pollEvent(event))
@@ -122,22 +132,22 @@ void Update(RenderWindow& window)
     {
         direction++;
     }    
-    if (Keyboard::isKeyPressed(controls[2]) && paddles[1].getPosition().y > 35)
+    if (paddles[1].getPosition().y > 35 && paddles[1].getPosition().y + paddleSize.y / 2 > by && bx > gameWidth / 2)
     {
-        direction2--;
+        direction2--;    
     }
-    if (Keyboard::isKeyPressed(controls[3]) && paddles[1].getPosition().y < gameHeight - 65)
+    if (paddles[1].getPosition().y < gameHeight - 65 && paddles[1].getPosition().y + paddleSize.y / 2 < by && bx > gameWidth / 2)
     {
         direction2++;
     }
+
+
     paddles[0].move(0, direction * paddleSpeed * dt);
     paddles[1].move(0, direction2 * paddleSpeed * dt);
 
     ball.move(ballVelocity * dt);
-
+        
     // Check ball collision
-    const float bx = ball.getPosition().x;
-    const float by = ball.getPosition().y;
     if (by > gameHeight - 10)
     {
         // Bottom wall
