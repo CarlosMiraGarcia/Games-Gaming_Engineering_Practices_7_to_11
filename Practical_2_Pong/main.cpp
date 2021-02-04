@@ -59,7 +59,7 @@ void Load()
     ballVelocity = {(server ? 200.0f : -200.0f), 40.0f};
 
     //Load font-face from res direction
-    font.loadFromFile("Fira.otf");
+    font.loadFromFile("res/Fira.otf");
     // Set text element to use font
     scoreTextLeft.setFont(font);
     scoreTextRigth.setFont(font);

@@ -16,8 +16,25 @@ add_subdirectory("lib/sfml")
 set(SFML_INCS "lib/sfml/include")
 link_directories("${CMAKE_BINARY_DIR}/lib/sfml/lib")
 
-#### Practical 2 ####
+#### Adding Res folder ####
+add_custom_target(copy_resources ALL COMMAND ${CMAKE_COMMAND} 
+  -E copy_directory
+    "${PROJECT_SOURCE_DIR}/res"
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIGURATION>/res)
+	
+#### Pong ####
 file(GLOB_RECURSE SOURCES Practical_2_Pong/*.cpp Practical_2_Pong/*.h)
 add_executable(Practical_2_Pong ${SOURCES})
 target_include_directories(Practical_2_Pong PRIVATE ${SFML_INCS})
 target_link_libraries(Practical_2_Pong sfml-graphics)
+add_dependencies(Practical_2_Pong copy_resources)
+
+#### Space invaders ####
+file(GLOB_RECURSE SOURCES Practical_3_Space_Invaders/*.cpp Practical_3_Space_Invaders/*.h)
+add_executable(Practical_3_Space_Invaders ${SOURCES} )
+target_include_directories(Practical_3_Space_Invaders SYSTEM PRIVATE ${SFML_INCS})
+target_link_libraries(Practical_3_Space_Invaders sfml-graphics)
+add_dependencies(Practical_3_Space_Invaders copy_resources)
+
+
+
