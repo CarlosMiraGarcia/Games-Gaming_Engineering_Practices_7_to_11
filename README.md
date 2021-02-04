@@ -2,4 +2,4 @@
 Practical 2, Pong game.
 
 Sorry about the structure of the code. 
-Just practice and learning C++ syntax
+This is just a practice for learning C++ syntax
