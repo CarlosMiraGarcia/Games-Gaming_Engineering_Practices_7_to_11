@@ -225,7 +225,6 @@ void Update(RenderWindow& window)
     }
 }
 
-
 void Render(RenderWindow &window)
 {
     // Draw Everything
