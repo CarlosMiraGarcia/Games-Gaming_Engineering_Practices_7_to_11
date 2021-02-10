@@ -6,10 +6,11 @@
 using namespace sf;
 using namespace std;
 
-constexpr uint16_t gameWidth = 800;
-constexpr uint16_t gameHeight = 600;
-constexpr uint16_t invaders_rows = 5;
+constexpr uint16_t gameWidth = 1200;
+constexpr uint16_t gameHeight = 900;
+constexpr uint16_t invaders_rows = 10;
 constexpr uint16_t invaders_columns = 14;
+
 constexpr Keyboard::Key controls[3] = {
 	Keyboard::A, // Player1 Left
 	Keyboard::D, // Player1 Right
@@ -19,5 +20,6 @@ constexpr Keyboard::Key controls[3] = {
 extern sf::Texture spritesheet;
 extern std::vector<Ship*> ships;
 extern Player* player;
+extern int scoreValue;
 
 

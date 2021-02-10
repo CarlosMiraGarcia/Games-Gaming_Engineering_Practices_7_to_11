@@ -33,7 +33,7 @@ void Bullet::Render(sf::RenderWindow& window) {
 }
 
 void Bullet::Fire(const sf::Vector2f& pos, const bool mode) {
-	Bullet& tempbullet = bullets[bulletPointer++];
+	Bullet& tempbullet = bullets[++bulletPointer];
 
 	tempbullet.setPosition(pos);
 	tempbullet._mode = mode;
@@ -72,9 +72,9 @@ void Bullet::_Update(const float& dt) {
 				s->Explode();
 				//Warp bullet off-screen
 				setPosition(-100, -100);
+				scoreValue += 50;
 				return;
 			}
 		}
 	}
 }
-

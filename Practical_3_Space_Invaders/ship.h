@@ -5,6 +5,9 @@
 class Ship : public sf::Sprite {
 protected:
 	sf::IntRect _sprite;
+	bool _exploded = false;
+	bool _gameOver = false;
+
 	//Default constructor is hidden
 	Ship();
 
@@ -16,7 +19,9 @@ public:
 	// Update, virtual so can be overridden, but not pure virtual
 	virtual void Update(const float& dt);
 	virtual void MoveDown();
+	virtual void Animate();
 	bool is_exploded() const;
+	bool is_gameOver() const;
 	virtual void Explode();
 };
 
@@ -25,9 +30,11 @@ class Invader : public Ship {
 public:
 	static bool direction;
 	static float speed;
+	static float animationCoolDown;
 	Invader(sf::IntRect ir, sf::Vector2f pos);
 	Invader();
 	void Update(const float& dt) override;
+	void Animate() override;
 	void MoveDown() override;
 private:
 	float fadetime = 0.5f;
