@@ -15,6 +15,9 @@ public:
 	virtual ~Ship() = 0;
 	// Update, virtual so can be overridden, but not pure virtual
 	virtual void Update(const float& dt);
+	virtual void MoveDown();
+	bool is_exploded() const;
+	virtual void Explode();
 };
 
 // Define our Invader Class
@@ -25,13 +28,16 @@ public:
 	Invader(sf::IntRect ir, sf::Vector2f pos);
 	Invader();
 	void Update(const float& dt) override;
+	void MoveDown() override;
+private:
+	float fadetime = 0.5f;
 };
 
 // Define our Player Class
 class Player : public Ship {
 public:
-	static float direction;
 	static float speed;
+	static float direction;
 	Player();
 	void Update(const float& dt) override;
 };
