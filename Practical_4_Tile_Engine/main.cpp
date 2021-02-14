@@ -1,7 +1,8 @@
 #include <SFML/Graphics.hpp>
-#include "game.h"
 #include <iostream>
+#include "game.h"
 #include "Player.h"
+#include "LevelSystem.h">
 
 using namespace sf;
 using namespace std;
@@ -9,7 +10,15 @@ using namespace std;
 auto player = make_unique<Player>();
 
 void Load() {
+	ls::loadLevelFile("res/maze_2.txt");
 
+	// Print the level to the console
+	for (size_t y = 0; y < ls::getHeight(); ++y) {
+		for (size_t x = 0; x < ls::getWidth(); ++x) {
+			cout << ls::getTile({ x, y });
+		}
+		cout << endl;
+	}
 }
 
 void Update(RenderWindow& window) {
@@ -35,6 +44,7 @@ void Update(RenderWindow& window) {
 }
 void Render(RenderWindow& window) {
 	player->Render(window);
+	ls::Render(window);
 }
 
 int main() {

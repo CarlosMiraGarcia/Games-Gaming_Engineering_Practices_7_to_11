@@ -20,7 +20,12 @@ link_directories("${CMAKE_BINARY_DIR}/lib/sfml/lib")
 file(GLOB_RECURSE SOURCE_FILES lib_tile_level_loader/*.cpp lib_tile_level_loader/*.h)
 add_library(lib_tile_level_loader STATIC ${SOURCE_FILES})
 target_include_directories(lib_tile_level_loader INTERFACE "${CMAKE_SOURCE_DIR}/lib_tile_level_loader/" )
-target_link_libraries(lib_tile_level_loader sfml-graphics)
+target_link_libraries(lib_tile_level_loader lib_maths sfml-graphics)
+
+# Maths lib
+add_library(lib_maths INTERFACE)
+target_sources(lib_maths INTERFACE "${CMAKE_SOURCE_DIR}/lib_maths/maths.h")
+target_include_directories(lib_maths INTERFACE "${CMAKE_SOURCE_DIR}/lib_maths" SYSTEM INTERFACE ${SFML_INCS})
 
 #### Adding Res folder ####
 add_custom_target(copy_resources ALL COMMAND ${CMAKE_COMMAND} 
@@ -46,7 +51,7 @@ add_dependencies(Practical_3_Space_Invaders copy_resources)
 file(GLOB_RECURSE SOURCES Practical_4_Tile_Engine/*.cpp Practical_4_Tile_Engine/*.h)
 add_executable(Practical_4_Tile_Engine ${SOURCES} )
 target_include_directories(Practical_4_Tile_Engine SYSTEM PRIVATE ${SFML_INCS})
-target_link_libraries(Practical_4_Tile_Engine sfml-graphics)
+target_link_libraries(Practical_4_Tile_Engine sfml-graphics lib_tile_level_loader)
 add_dependencies(Practical_4_Tile_Engine copy_resources)
 
 

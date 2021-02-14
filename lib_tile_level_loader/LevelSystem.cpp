@@ -95,7 +95,13 @@ void LevelSystem::loadLevelFile(const std::string& path, float tileSize) {
     cout << "Level " << path << " Loaded. " << w << "x" << h << std::endl;
     buildSprites();
 }
+size_t LevelSystem::getHeight() {
+    return _height;
+}
 
+size_t LevelSystem::getWidth() {
+    return _width;
+}
 
 void LevelSystem::buildSprites() {
     _sprites.clear();
