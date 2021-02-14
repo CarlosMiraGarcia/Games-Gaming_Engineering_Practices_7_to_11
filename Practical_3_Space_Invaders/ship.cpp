@@ -1,6 +1,7 @@
 #include "ship.h"
 #include "game.h"
 #include "bullet.h"
+#include <iostream>
 using namespace sf;
 using namespace std;
 
@@ -56,6 +57,9 @@ void Invader::Animate() {
 void Invader::Update(const float& dt) {
 	Ship::Update(dt);
 
+	// Invader variables
+	speed = 20.f;
+
 	move(dt * (direction ? 1.0f : -1.0f) * speed, 0);
 	
 	// If the invader is not destroyed, the animation will change the sprite in order to create some "movement" effect
@@ -105,7 +109,7 @@ Player::Player() : Ship(IntRect(160, 32, 32, 32)) {
 void Player::Update(const float& dt) {
 	Ship::Update(dt);
 
-	if (is_exploded()) { _gameOver = true;  return; }
+	if (is_exploded()) { _gameOver = true; return; }
 
 	// Player variables
 	direction = 0.0f;

@@ -10,6 +10,8 @@ public:
 	static void Render(sf::RenderWindow& window);
 	//Chose a bullet and use it
 	static void Fire(const sf::Vector2f& pos, const bool mode);
+	static float bulletAnimationCD;
+	static void Animate(Bullet &b);
 	~Bullet() = default;
 
 protected:
@@ -21,4 +23,5 @@ protected:
 	Bullet();
 	//false= player bullet, true=Enemy bullet
 	bool _mode = false;
+	static bool changeAnimation;
 };

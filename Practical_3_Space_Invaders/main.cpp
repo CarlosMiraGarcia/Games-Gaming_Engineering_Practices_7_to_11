@@ -20,10 +20,8 @@ sf::Text titleText;
 sf::Text gameOver;
 sf::Font font;
 int scoreValue;
+bool isOver;
 
-void Reset() {
-	Invader::speed = 25.f;
-}
 
 void GameOver(RenderWindow& window) {
 	window.draw(gameOver);
@@ -58,7 +56,6 @@ void Load() {
 	ships.push_back(player);
 
 	Bullet::Init();
-	Reset();
 
 	//Load font-face from res direction
 	font.loadFromFile("res/Fira.otf");
@@ -104,6 +101,7 @@ void Load() {
 	gameOver.setPosition(sf::Vector2f(gameWidth / 2, gameHeight / 2 - 50));
 }
 
+
 void Update(RenderWindow& window) {
 	// Reset clock, recalculate deltatime
 	static Clock clockDelta;
@@ -120,6 +118,7 @@ void Update(RenderWindow& window) {
 	
 	// Animation timer decreases with delta time
 	Invader::animationCoolDown -= dt;
+	Bullet::bulletAnimationCD -= dt;
 
 	// We update each of the ships inside the ship array
 	for (auto& s : ships) {
@@ -133,19 +132,23 @@ void Update(RenderWindow& window) {
 
 	// Check if animation timer is less than 0, then reset it
 	if (Invader::animationCoolDown < 0) {
-		Invader::animationCoolDown = 1.0f;
+		Invader::animationCoolDown = 0.6f;
 	}
+
+
 
 	// Update bullet class
 	Bullet::Update(dt);
 
+	if (Bullet::bulletAnimationCD < 0) {
+		Bullet::bulletAnimationCD = 0.1f;
+	}
 	// Keyboard binds
 	if (Keyboard::isKeyPressed(Keyboard::Escape)) {
 		window.close();
 	}
 
 	scoreValueText.setString(to_string(scoreValue));
-
 }
 
 

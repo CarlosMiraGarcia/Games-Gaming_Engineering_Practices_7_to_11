@@ -6,6 +6,8 @@ using namespace sf;
 using namespace std;
 
 unsigned char Bullet::bulletPointer;
+float Bullet::bulletAnimationCD;
+bool Bullet::changeAnimation;
 Bullet Bullet::bullets[256];
 
 //Define Bullet Class
@@ -20,9 +22,13 @@ void Bullet::Init() {
 	}
 }
 
+
 void Bullet::Update(const float& dt) {
 	for (auto& b : bullets) {
 		b._Update(dt);
+		if (bulletAnimationCD <= 0) {
+			Animate(b);
+		}
 	}
 }
 
@@ -47,13 +53,31 @@ void Bullet::Fire(const sf::Vector2f& pos, const bool mode) {
 	}
 }
 
+// Check the sprite and change it for the next or previous one in order to create animation effect
+ void Bullet::Animate(Bullet& b) {
+
+	if (changeAnimation) {
+		b.setTextureRect(IntRect(96, 32, 32, 32)); 
+		changeAnimation = false;
+		return;
+	}
+
+	else {
+		b.setTextureRect(IntRect(64, 32, 32, 32)); 
+		changeAnimation = true;
+		return;
+	}
+
+}
+
 void Bullet::_Update(const float& dt) {
+
 	if (getPosition().y < -32 || getPosition().y > gameHeight + 32) {
 		//off screen - do nothing
 		return;
 	}
 	else {
-		move(0, dt * 200.0f * (_mode ? 1.0f : -1.0f));
+		move(0, dt * 200.0f * (_mode ? 1.0f : -5.0f));
 		const FloatRect boundingBox = getGlobalBounds();
 
 		for (auto s : ships) {
@@ -72,7 +96,9 @@ void Bullet::_Update(const float& dt) {
 				s->Explode();
 				//Warp bullet off-screen
 				setPosition(-100, -100);
-				scoreValue += 50;
+				if (s != player) {
+					scoreValue += 50;
+				}
 				return;
 			}
 		}
