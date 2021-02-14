@@ -101,7 +101,6 @@ void Load() {
 	gameOver.setPosition(sf::Vector2f(gameWidth / 2, gameHeight / 2 - 50));
 }
 
-
 void Update(RenderWindow& window) {
 	// Reset clock, recalculate deltatime
 	static Clock clockDelta;
@@ -135,8 +134,6 @@ void Update(RenderWindow& window) {
 		Invader::animationCoolDown = 0.6f;
 	}
 
-
-
 	// Update bullet class
 	Bullet::Update(dt);
 
@@ -150,7 +147,6 @@ void Update(RenderWindow& window) {
 
 	scoreValueText.setString(to_string(scoreValue));
 }
-
 
 void Render(RenderWindow& window) {
 	for (const auto s : ships) {

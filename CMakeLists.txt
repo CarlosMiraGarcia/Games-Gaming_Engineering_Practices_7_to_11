@@ -36,5 +36,11 @@ target_include_directories(Practical_3_Space_Invaders SYSTEM PRIVATE ${SFML_INCS
 target_link_libraries(Practical_3_Space_Invaders sfml-graphics)
 add_dependencies(Practical_3_Space_Invaders copy_resources)
 
+#### Tiles Engine ####
+file(GLOB_RECURSE SOURCES Practical_4_Tile_Engine/*.cpp Practical_4_Tile_Engine/*.h)
+add_executable(Practical_4_Tile_Engine ${SOURCES} )
+target_include_directories(Practical_4_Tile_Engine SYSTEM PRIVATE ${SFML_INCS})
+target_link_libraries(Practical_4_Tile_Engine sfml-graphics)
+add_dependencies(Practical_4_Tile_Engine copy_resources)
 
 
