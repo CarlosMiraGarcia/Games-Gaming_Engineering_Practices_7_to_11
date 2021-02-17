@@ -10,6 +10,7 @@ private:
 public:
 	void Update(double dt) override;
 	bool validMove(sf::Vector2f pos);
+	float getSize();
 	Player();
 	void Render(sf::RenderWindow & window) const override;
 };

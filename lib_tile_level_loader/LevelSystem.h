@@ -18,17 +18,18 @@ public:
 	static void setColor(TILE t, sf::Color c);
 	//Get Tile at grid coordinate
 	static TILE getTile(sf::Vector2ul);
-	//Get Screenspace coordinate of tile
-	static sf::Vector2f getTilePosition(sf::Vector2ul);
 	//get the tile at screenspace pos
 	static TILE getTileAt(sf::Vector2f);
 	static size_t getHeight();
 	static size_t getWidth();
+	//Get Screenspace coordinate of tile
+	static sf::Vector2f getTilePosition(sf::Vector2ul);
+	static std::vector<sf::Vector2ul> findTiles(TILE);
+		
 	static size_t getTileSize();
 	static size_t getWindowWidth();
 	static size_t getWindowHeight();
 	static sf::Vector2f getOffset();
-	static std::vector<sf::Vector2ul> findTiles(TILE);
 
 
 protected:
@@ -36,13 +37,13 @@ protected:
 	static size_t _width; //how many tiles wide is level
 	static size_t _height; //how many tile high is level
 	static sf::Vector2f _offset; //Screenspace offset of level, when rendered.
-	static float _tileSize; //Screenspace size of each tile, when rendered.
 	static std::map<TILE, sf::Color> _colours; //color to render each tile type
 
 	//Array of SFML sprites of each tile
 	static std::vector<std::unique_ptr<sf::RectangleShape>> _sprites;
 	//Generate the _sprites array
 	static void buildSprites();
+	static float _tileSize; //Screenspace size of each tile, when rendered.
 
 private:
 	LevelSystem() = delete;

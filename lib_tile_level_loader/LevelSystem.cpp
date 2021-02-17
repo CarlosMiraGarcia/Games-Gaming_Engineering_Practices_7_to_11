@@ -9,8 +9,8 @@ std::unique_ptr<LevelSystem::TILE[]> LevelSystem::_tiles;
 size_t LevelSystem::_width;
 size_t LevelSystem::_height;
 
-float LevelSystem::_tileSize(100.f);
 Vector2f LevelSystem::_offset(0.0f, 0.0f);
+float LevelSystem::_tileSize(100.f);
 vector<std::unique_ptr<sf::RectangleShape>> LevelSystem::_sprites;
 
 std::map<LevelSystem::TILE, sf::Color> LevelSystem::_colours{
@@ -23,7 +23,6 @@ sf::Color LevelSystem::getColor(LevelSystem::TILE t) {
 	}
 	return _colours[t];
 }
-
 
 // I created this, it may not work
 void LevelSystem::setColor(LevelSystem::TILE t, sf::Color c) {
@@ -128,27 +127,20 @@ sf::Vector2f LevelSystem::getTilePosition(sf::Vector2ul p) {
 }
 
 std::vector<sf::Vector2ul> LevelSystem::findTiles(LevelSystem::TILE t) {
-	auto v = vector<sf::Vector2ul>();
+	auto tiles = vector<sf::Vector2ul>();
 	for (size_t i = 0; i < _width * _height; ++i) {
 		if (_tiles[i] == t) {
-			v.push_back({ i % _width, i / _width });			
+			tiles.push_back({ i % _width, i / _width });
 		}
 	}
-	return v;
+	return tiles;
 }
-
 
 LevelSystem::TILE LevelSystem::getTileAt(Vector2f v) {
 	auto a = v - _offset;
 	if (a.x < 0 || a.y < 0) {
 		throw string("Tile out of range ");
 	}
-
-	//We dived by the tile size because we are converting the coordiantes
-	//(for example, (300,100), which is measured in pixels. By divided by the tile size,
-	//We will get the number of tiles (height and width). For example, if the tile size is 100,
-	//and we get the coordiantes (300,100), they will correspond to the tile at position 3,1 in
-	//the tile grid (_tiles).
 	return getTile(Vector2ul((v ) / (_tileSize)));
 }
 

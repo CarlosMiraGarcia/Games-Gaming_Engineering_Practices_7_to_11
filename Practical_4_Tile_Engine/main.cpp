@@ -14,6 +14,9 @@ auto player = make_unique<Player>();
 void Load() {
 	ls::loadLevelFile("res/maze_2.txt", 100.f);
 
+	vector<Vector2ul> tile = ls::findTiles(LevelSystem::TILE::START);
+	player-> setPosition(Vector2f(ls::getTilePosition(tile[0]) + Vector2f(_playerSize, _playerSize)));
+
 	// Print the level to the console
 	for (size_t y = 0; y < ls::getHeight(); ++y) {
 		for (size_t x = 0; x < ls::getWidth(); ++x) {
