@@ -1,16 +1,18 @@
+//main.cpp
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "game.h"
 #include "Player.h"
-#include "LevelSystem.h">
+#include "LevelSystem.h"
 
 using namespace sf;
 using namespace std;
 
+bool _finished = false;
 auto player = make_unique<Player>();
 
 void Load() {
-	ls::loadLevelFile("res/maze_2.txt");
+	ls::loadLevelFile("res/maze_2.txt", 100.f);
 
 	// Print the level to the console
 	for (size_t y = 0; y < ls::getHeight(); ++y) {
@@ -42,14 +44,15 @@ void Update(RenderWindow& window) {
 		
 	player->Update(dt);
 }
+
 void Render(RenderWindow& window) {
-	player->Render(window);
 	ls::Render(window);
+	player->Render(window);
 }
 
 int main() {
-	RenderWindow window(VideoMode(gameWidth, gameHeight), "Tiles Engine");
 	Load();
+	RenderWindow window(VideoMode(ls::getWindowWidth(), ls::getWindowHeight()), "Tiles Engine");
 	while (window.isOpen()) {
 		window.clear();
 		Update(window);

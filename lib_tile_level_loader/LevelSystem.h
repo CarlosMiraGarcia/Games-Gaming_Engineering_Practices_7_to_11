@@ -16,7 +16,6 @@ public:
 	static void Render(sf::RenderWindow& window);
 	static sf::Color getColor(TILE t);
 	static void setColor(TILE t, sf::Color c);
-
 	//Get Tile at grid coordinate
 	static TILE getTile(sf::Vector2ul);
 	//Get Screenspace coordinate of tile
@@ -25,6 +24,12 @@ public:
 	static TILE getTileAt(sf::Vector2f);
 	static size_t getHeight();
 	static size_t getWidth();
+	static size_t getTileSize();
+	static size_t getWindowWidth();
+	static size_t getWindowHeight();
+	static sf::Vector2f getOffset();
+	static std::vector<sf::Vector2ul> findTiles(TILE);
+
 
 protected:
 	static std::unique_ptr<TILE[]> _tiles; //Internal array of tiles

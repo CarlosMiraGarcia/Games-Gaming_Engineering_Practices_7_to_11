@@ -21,7 +21,21 @@ void Bullet::Init() {
 		b.setOrigin(16, 16);
 	}
 }
+// Check the sprite and change it for the next or previous one in order to create animation effect
+void Bullet::Animate(Bullet& b) {
 
+	if (changeAnimation) {
+		b.setTextureRect(IntRect(96, 32, 32, 32));
+		changeAnimation = false;
+		return;
+	}
+
+	else {
+		b.setTextureRect(IntRect(64, 32, 32, 32));
+		changeAnimation = true;
+		return;
+	}
+}
 
 void Bullet::Update(const float& dt) {
 	for (auto& b : bullets) {
@@ -51,23 +65,6 @@ void Bullet::Fire(const sf::Vector2f& pos, const bool mode) {
 	else {
 		tempbullet.setTextureRect(IntRect(32, 32, 32, 32));
 	}
-}
-
-// Check the sprite and change it for the next or previous one in order to create animation effect
- void Bullet::Animate(Bullet& b) {
-
-	if (changeAnimation) {
-		b.setTextureRect(IntRect(96, 32, 32, 32)); 
-		changeAnimation = false;
-		return;
-	}
-
-	else {
-		b.setTextureRect(IntRect(64, 32, 32, 32)); 
-		changeAnimation = true;
-		return;
-	}
-
 }
 
 void Bullet::_Update(const float& dt) {

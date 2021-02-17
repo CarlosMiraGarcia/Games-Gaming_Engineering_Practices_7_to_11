@@ -11,12 +11,12 @@ public:
 	//Chose a bullet and use it
 	static void Fire(const sf::Vector2f& pos, const bool mode);
 	static float bulletAnimationCD;
-	static void Animate(Bullet &b);
 	~Bullet() = default;
 
 protected:
 	static unsigned char bulletPointer;
 	static Bullet bullets[256];
+	static void Animate(Bullet& b);
 	//Called by static Update()
 	void _Update(const float& dt);
 	//Not called by our code
