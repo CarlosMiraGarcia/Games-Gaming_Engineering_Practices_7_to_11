@@ -53,13 +53,18 @@ void Player::Update(double dt) {
 
 	Entity::Update(dt);
 }
+
+bool Player::isFinished() {
+	return _finished;
+}
+
 float Player::getSize() {
 	return _playerSize;
 }
 
 Player::Player()
 	:
-	_speed(300.f), _direction(0.f), _finished(false), Entity(make_unique<CircleShape>(_playerSize)) {
+	_speed(500.f), _direction(0.f), _finished(false), Entity(make_unique<CircleShape>(_playerSize)) {
 	_shape->setFillColor(Color::Magenta);
 	_shape->setOrigin(_playerSize, _playerSize);
 	//_position = Vector2f(130.f, 130.f);

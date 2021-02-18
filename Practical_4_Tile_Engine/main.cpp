@@ -7,9 +7,14 @@
 
 using namespace sf;
 using namespace std;
+sf::Text timerText;
+sf::Text bestTimer;
+sf::Font font;
 
-bool _finished = false;
 auto player = make_unique<Player>();
+float timerValue;
+float bestValue;
+sf::Clock playerTimer;
 
 void Load() {
 	ls::loadLevelFile("res/maze_2.txt", 100.f);
@@ -24,9 +29,33 @@ void Load() {
 		}
 		cout << endl;
 	}
+	playerTimer.restart();
+
+	//Load font-face from res direction
+	font.loadFromFile("res/Fira.otf");
+	// Set timerText properties
+	timerText.setFont(font);
+	timerText.setCharacterSize(28);
+	timerText.setFillColor(sf::Color::Black);
+	timerText.setString(to_string(timerValue));
+	sf::FloatRect timerTextRect = timerText.getLocalBounds();
+	timerText.setOrigin(timerTextRect.width /2, timerTextRect.height / 2);
+	timerText.setPosition(sf::Vector2f(ls::getWindowWidth()/2, 10));
+	// Set timerText properties
+	bestTimer.setFont(font);
+	bestTimer.setCharacterSize(28);
+	bestTimer.setFillColor(sf::Color::Black);
+	bestTimer.setString(to_string(bestValue));
+	sf::FloatRect bestTextRect = timerText.getLocalBounds();
+	bestTimer.setOrigin(bestTextRect.width / 2, bestTextRect.height / 2);
+	bestTimer.setPosition(sf::Vector2f(200, 10));
 }
 
 void Update(RenderWindow& window) {
+	sf::Time elapsed1 = playerTimer.getElapsedTime();
+	timerValue = elapsed1.asSeconds();
+	timerText.setString(to_string(timerValue));
+
 	// Reset clock, recalculate deltatime
 	static Clock clockDelta;
 	float dt = clockDelta.restart().asSeconds();
@@ -46,11 +75,23 @@ void Update(RenderWindow& window) {
 	}
 		
 	player->Update(dt);
+
+	if (player->isFinished() == true) {
+		playerTimer.restart();
+
+		if (timerValue < bestValue || bestValue == 0) {
+			bestValue = timerValue;
+		}
+		Load();
+		player->_finished = false;
+	}
 }
 
 void Render(RenderWindow& window) {
 	ls::Render(window);
 	player->Render(window);
+	window.draw(timerText);
+	window.draw(bestTimer);
 }
 
 int main() {
