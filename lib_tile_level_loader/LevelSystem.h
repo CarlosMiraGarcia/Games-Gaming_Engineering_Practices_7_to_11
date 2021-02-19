@@ -39,10 +39,10 @@ protected:
 	static sf::Vector2f _offset; //Screenspace offset of level, when rendered.
 	static std::map<TILE, sf::Color> _colours; //color to render each tile type
 
-	// Array of SFML sprites of each tile
+	//Array of SFML sprites of each tile
 	static std::vector<std::unique_ptr<sf::RectangleShape>> _sprites;
 	static std::vector<std::unique_ptr<sf::CircleShape>> _spritesCircle;
-	// Generate the _sprites array
+	//Generate the _sprites array
 	static void buildSprites();
 	static float _tileSize; //Screenspace size of each tile, when rendered.
 
