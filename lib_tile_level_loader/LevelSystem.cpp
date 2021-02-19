@@ -10,11 +10,12 @@ size_t LevelSystem::_width;
 size_t LevelSystem::_height;
 
 Vector2f LevelSystem::_offset(0.0f, 0.0f);
-float LevelSystem::_tileSize(100.f);
+float LevelSystem::_tileSize;
 vector<std::unique_ptr<sf::RectangleShape>> LevelSystem::_sprites;
+vector<std::unique_ptr<sf::CircleShape>> LevelSystem::_spritesCircle;
 
 std::map<LevelSystem::TILE, sf::Color> LevelSystem::_colours{
-	{WALL, Color::White}, {END, Color::Red}, {START, Color::Cyan} };
+	{WALL, Color::White}, {END, Color::Red}, {WAYPOINT, Color::Cyan} };
 
 sf::Color LevelSystem::getColor(LevelSystem::TILE t) {
 	auto it = _colours.find(t);
@@ -92,19 +93,34 @@ void LevelSystem::loadLevelFile(const std::string& path, float tileSize) {
 
 void LevelSystem::buildSprites() {
 	_sprites.clear();
+	_spritesCircle.clear();
 	for (size_t y = 0; y < _height; ++y) {
 		for (size_t x = 0; x < _width; ++x) {
-			auto s = make_unique<RectangleShape>();
-			s->setPosition(getTilePosition({ x, y }));
-			s->setSize(Vector2f(_tileSize, _tileSize));
-			s->setFillColor(getColor(getTile({ x, y })));
-			_sprites.push_back(move(s));
+			if (getTile({ x, y }) == WAYPOINT) {
+				auto s = make_unique<CircleShape>();
+				s->setRadius(_tileSize/5);
+				s->setOrigin(-_tileSize/3, -_tileSize/3);
+				s->setPosition(getTilePosition({ x, y }));
+				s->setFillColor(getColor(getTile({ x, y })));
+				_spritesCircle.push_back(move(s));
+			}
+
+			else {
+				auto s = make_unique<RectangleShape>();
+				s->setSize(Vector2f(_tileSize, _tileSize));
+				s->setPosition(getTilePosition({ x, y }));
+				s->setFillColor(getColor(getTile({ x, y })));
+				_sprites.push_back(move(s));
+			}			
 		}
 	}
 }
 
 void LevelSystem::Render(RenderWindow& window) {
 	for (auto& t : _sprites) {
+		window.draw(*t);
+	}	
+	for (auto& t : _spritesCircle) {
 		window.draw(*t);
 	}
 }

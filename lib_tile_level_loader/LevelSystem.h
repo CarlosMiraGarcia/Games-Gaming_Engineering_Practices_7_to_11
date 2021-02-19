@@ -41,6 +41,7 @@ protected:
 
 	//Array of SFML sprites of each tile
 	static std::vector<std::unique_ptr<sf::RectangleShape>> _sprites;
+	static std::vector<std::unique_ptr<sf::CircleShape>> _spritesCircle;
 	//Generate the _sprites array
 	static void buildSprites();
 	static float _tileSize; //Screenspace size of each tile, when rendered.

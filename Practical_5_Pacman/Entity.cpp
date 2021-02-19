@@ -11,4 +11,4 @@ void Entity::Update(const double dt) {
 }
 
 
-Entity::Entity(unique_ptr<Shape> s) : _shape(std::move(s)){}
+Entity::Entity(unique_ptr<Shape> s) : _shape(std::move(s)) {}

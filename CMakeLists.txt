@@ -54,4 +54,11 @@ target_include_directories(Practical_4_Tile_Engine SYSTEM PRIVATE ${SFML_INCS})
 target_link_libraries(Practical_4_Tile_Engine sfml-graphics lib_tile_level_loader)
 add_dependencies(Practical_4_Tile_Engine copy_resources)
 
+#### Pacman ####
+file(GLOB_RECURSE SOURCES Practical_5_Pacman/*.cpp Practical_5_Pacman/*.h)
+add_executable(Practical_5_Pacman ${SOURCES} )
+target_include_directories(Practical_5_Pacman SYSTEM PRIVATE ${SFML_INCS})
+target_link_libraries(Practical_5_Pacman sfml-graphics lib_tile_level_loader)
+add_dependencies(Practical_5_Pacman copy_resources)
+
 
