@@ -13,6 +13,7 @@ public:
 	void Update(double dt) override;
 	bool validMove(sf::Vector2f pos);
 	float getSize();
-	Ghost(int color);
+	Ghost();
+	void SetFillColor(int colour);
 	void Render(sf::RenderWindow& window) const override;
 };

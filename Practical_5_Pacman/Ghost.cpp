@@ -76,11 +76,14 @@ float Ghost::getSize() {
 	return _ghostSize;
 }
 
-Ghost::Ghost(const int color)
+Ghost::Ghost()
 	:
 	_speed(150.f), _direction(0.f), _xValue(1.f), _yValue(0.f), Entity(make_unique<CircleShape>(_ghostSize)) {
-	_shape->setFillColor(Color::Color(color));
 	_shape->setOrigin(_ghostSize, _ghostSize);
+}
+
+void Ghost::SetFillColor(int color) {
+	_shape->setFillColor(Color::Color(color));
 }
 
 void Ghost::Render(sf::RenderWindow& window) const {

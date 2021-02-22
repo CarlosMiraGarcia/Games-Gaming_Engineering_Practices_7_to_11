@@ -10,11 +10,10 @@ protected:
 	std::unique_ptr<sf::Shape> _shape;
 	sf::Vector2f _position;
 	Entity(std::unique_ptr<sf::Shape> shp);
-	Entity();
 
 public:
-	virtual ~Entity() = 0;
-
+	Entity() = delete;
+	virtual ~Entity() = default;
 	virtual void Update(const double dt);
 	virtual void Render(sf::RenderWindow& window) const = 0;
 
@@ -23,4 +22,9 @@ public:
 	void move(const sf::Vector2f& pos);
 };
 
+struct EntityManager {
+	std::vector<std::shared_ptr<Entity>> list;
+	void update(double dt);
+	void render(sf::RenderWindow& window);
+};
 
