@@ -2,18 +2,31 @@
 #include <iostream>
 #include "LevelSystem.h"
 #include "Player.h"
+#include "Entity.h"
+#include "Ghost.h"
 #include "game.h"
+#include "main.h"
 
 using namespace sf;
 using namespace std;
 
-auto player = make_unique<Player>();
+auto player = new Player();
+std::vector<Entity*> characters;
 
 void Load() {
+
 	ls::setColor(ls::TILE::WALL, sf::Color::Color(0x002121DEff));
 	ls::loadLevelFile("res/pacman.txt", _tileSize);
 	vector<Vector2ul> tile = ls::findTiles(ls::TILE::START);
 	player->setPosition(Vector2f(ls::getTilePosition(tile[0]) + Vector2f(_playerSize, _playerSize)));
+	characters.push_back(player);
+
+	for (int i = 0; i <= 0; i++) {
+		auto ghost = new Ghost(ghostColours[i]);	
+		vector<Vector2ul> tile = ls::findTiles(ls::TILE::ENEMY);
+		ghost->setPosition(Vector2f(ls::getTilePosition(tile[i]) + Vector2f(_ghostSize, _ghostSize)));
+		characters.push_back(ghost);
+	}
 
 	// Print the level to the console
 	for (size_t y = 0; y < ls::getHeight(); ++y) {
@@ -42,12 +55,15 @@ void Update(RenderWindow& window) {
 		window.close();
 	}
 
-	player->Update(dt);
-
+	for (auto& c : characters) {
+		c->Update(dt);
+	}
 }
 void Render(RenderWindow& window) {
 	ls::Render(window);
-	player->Render(window);
+	for (const auto c : characters) {
+		c->Render(window);
+	}
 }
 
 int main() {

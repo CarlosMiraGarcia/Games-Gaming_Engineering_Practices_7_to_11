@@ -5,16 +5,15 @@
 using namespace sf;
 using namespace std;
 
-
 class Entity {
 protected:
 	std::unique_ptr<sf::Shape> _shape;
 	sf::Vector2f _position;
 	Entity(std::unique_ptr<sf::Shape> shp);
+	Entity();
 
 public:
-	Entity() = delete;
-	virtual ~Entity() = default;
+	virtual ~Entity() = 0;
 
 	virtual void Update(const double dt);
 	virtual void Render(sf::RenderWindow& window) const = 0;
@@ -23,4 +22,5 @@ public:
 	void setPosition(const sf::Vector2f& pos);
 	void move(const sf::Vector2f& pos);
 };
+
 

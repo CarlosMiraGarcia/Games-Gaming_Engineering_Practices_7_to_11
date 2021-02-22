@@ -14,7 +14,6 @@ bool Player::validMove(sf::Vector2f pos) {
 }
 
 void Player::Update(double dt) {
-
 	if (ls::getTileAt(getPosition()) == ls::END && _finished == false) {
 		cout << "YOU WIN" << endl;
 		_finished = true;
@@ -50,7 +49,6 @@ void Player::Update(double dt) {
 	if (!validMove(getPosition())) {
 		cout << "Invalid move " << counter++ << endl;
 	}
-
 	Entity::Update(dt);
 }
 
