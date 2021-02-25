@@ -7,18 +7,15 @@ using namespace sf;
 using namespace std;
 
 class GhostMovementComponent : public ActorMovementComponent {
-private:
-	Vector2f _direction;
-	string _movingDirection;
+protected:
+	sf::Vector2f _direction;
+	enum state { ROAMING, ROTATING, ROTATED };
 	float offset;
-	Vector2f oldPosition;
-	bool _intersection;
-	bool checkUp(Vector2f vec);
-	bool checkDown(Vector2f vec);
-	bool checkLeft(Vector2f vec);
-	bool checkRight(Vector2f vec);
+	state _state;
 
 public:
 	explicit GhostMovementComponent(Entity* p);
 	void update(double dt) override;
 };
+
+

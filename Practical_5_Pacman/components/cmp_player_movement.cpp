@@ -1,4 +1,5 @@
 #include "cmp_player_movement.h"
+#include "..\Pacman.h"
 #include "..\game.h"
 
 using namespace std;
@@ -7,7 +8,7 @@ using namespace sf;
 PlayerMovementComponent::PlayerMovementComponent(Entity* p)
 	: ActorMovementComponent(p) {
 	_speed = 200.f;
-	offset = 7.f;
+	offset = 6.f;
 }
 
 void PlayerMovementComponent::update(double dt) {
@@ -40,6 +41,11 @@ void PlayerMovementComponent::update(double dt) {
 			_direction = Vector2f(0.f, 1.f);
 		}
 	}
+
+	if (LevelSystem::getTileAt(parent_pos) == LevelSystem::ENEMY) {
+		gameScene->respawn();
+	}
+
 
 	ActorMovementComponent::move(_direction * (float)(_speed * dt));
 	_direction = Vector2f(0.f, 0.f);

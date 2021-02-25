@@ -8,11 +8,19 @@
 #include "components/cmp_sprite.h"
 #include "components/cmp_player_movement.h"
 #include "components/cmp_ghost_movement.h"
+#include "components/cmp_pickup.h"
+#include "maths.h"
+
+
+using namespace std;
 
 sf::Font font;
 std::shared_ptr<Scene> gameScene;
 std::shared_ptr<Scene> menuScene;
 std::shared_ptr<Scene> activeScene;
+std::shared_ptr<Entity> player;
+std::vector<shared_ptr<Entity>> ghosts;
+std::vector<shared_ptr<Entity>> nibbles;
 EntityManager _ents;
 static Clock keboardTime;
 
@@ -54,7 +62,7 @@ void GameScene::load() {
 		ls::setColor(ls::TILE::WALL, sf::Color::Color(0x002121DEff));
 		ls::loadLevelFile("res/pacman.txt", _tileSize);
 
-		auto player = make_shared<Entity>();
+		player = make_shared<Entity>();
 		auto s = player->addComponent<ShapeComponent>();
 		s->setShape<sf::CircleShape>(_playerSize);
 		s->getShape().setFillColor(Color::Yellow);
@@ -79,8 +87,9 @@ void GameScene::load() {
 		s->getShape().setOrigin(Vector2f(_ghostSize, _ghostSize));
 		vector<Vector2ul> tile = ls::findTiles(ls::TILE::ENEMY);
 		ghost->setPosition(Vector2f(ls::getTilePosition(tile[i]) + Vector2f(_ghostSize, _ghostSize)));
-		ghost->addComponent<GhostMovementComponent>();		
+		ghost->addComponent<GhostMovementComponent>();
 
+		ghosts.push_back(ghost);
 		_ents.list.push_back(ghost);
 	}
 
@@ -92,6 +101,10 @@ void GameScene::load() {
 		cout << endl;
 	}
 }
+
+//std::shared_ptr<Entity> GameScene::makeNibble(const Vector2ul& nl, bool big) {
+//	return shared_ptr<Entity>();
+//}
 
 void GameScene::update(double dt) {
 	//Using a timer will allow me to use the same key to switch between scenes
@@ -106,6 +119,12 @@ void GameScene::update(double dt) {
 		}
 	}
 
+	for (auto& g : ghosts) {
+		if (length(g->getPosition() - player->getPosition()) < 30.0f) {
+			respawn();
+		}
+	}
+
 	_ents.update(dt);
 }
 
@@ -115,5 +134,17 @@ void GameScene::render() {
 }
 
 void GameScene::respawn() {
-	load();
+	auto player_spawns = ls::findTiles(ls::START);
+	player->setPosition(ls::getTilePosition(player_spawns[0]) + Vector2f(_playerSize, _playerSize));
+	player->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(150.f);
+
+	auto ghost_spawns = ls::findTiles(ls::ENEMY);
+	int i = 0;
+	for (auto& g : ghosts) {
+		g->setPosition(
+			ls::getTilePosition(ghost_spawns[i++]) + Vector2f(_ghostSize, _ghostSize));
+		g->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(300.0f);
+	}
 }
+
+

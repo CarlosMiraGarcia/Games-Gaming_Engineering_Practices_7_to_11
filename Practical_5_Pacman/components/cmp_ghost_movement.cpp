@@ -4,109 +4,69 @@
 
 using namespace std;
 using namespace sf;
+static const Vector2i directions[] = { {1, 0}, {0, 1}, {0, -1}, {-1, 0} };
 
 static Clock ghostTimer;
 
 GhostMovementComponent::GhostMovementComponent(Entity* p)
 	: ActorMovementComponent(p) {
-	_speed = 400.f;
-	_movingDirection = "Up";
-	offset = 7.25f;
+	_speed = 300.f;
+	_state = ROAMING;
 	_direction = Vector2f(0.f, -1.f);
-	_intersection = false;
 	// srand is the seed to create a random number
 	srand(time(NULL));
 }
 
 void GhostMovementComponent::update(double dt) {
-	std::deque<Vector2f> directions;
-	std::deque<string> directionsString;
-	std::deque<Vector2f> finalDirections;
+	//amount to move
+	const auto movementValue = (float)(_speed * dt);
+	//Curent position
+	const Vector2f position = _parent->getPosition();
+	//Next position
+	const Vector2f newPosition = position + _direction * movementValue;
+	//Inverse of our current direction
+	const Vector2i badDirection = -1 * Vector2i(_direction);
+	//Random new direction
+	Vector2i newDirection = directions[(rand() % 4)];
+	const Vector2f inFront = _direction * _ghostSize;
 
-	Vector2f parent_pos = _parent->getPosition();
+	switch (_state) {
+	case ROAMING:
+		// Wall in front or at waypoint
+		if (LevelSystem::getTileAt(position - inFront) == LevelSystem::WAYPOINT ||
+			LevelSystem::getTileAt(position + inFront) == LevelSystem::WALL)
+		{
+			_state = ROTATING;
+		}
+		else {
+			move(movementValue * _direction);
+		}
+		break;
 
-	if (_movingDirection != "Stop") {
-		//Left
-		if (!checkLeft(parent_pos) && _movingDirection == "Left") {
-			_movingDirection = "Stop";
+	case ROTATING:		
+		while (newDirection == badDirection || 
+			LevelSystem::getTileAt(position + (Vector2f(newDirection) * _ghostSize)) == LevelSystem::WALL) {
+			newDirection = directions[(rand() % 4)];
 		}
-		// Right
-		if (!checkRight(parent_pos) && _movingDirection == "Right") {
-			_movingDirection = "Stop";
+		if (newDirection == badDirection) {
+			_state = ROTATING;
+			break;
 		}
-		// Up
-		if (!checkUp(parent_pos) && _movingDirection == "Up") {
-			_movingDirection = "Stop";
-		}
-		// Down
-		if (!checkDown(parent_pos) && _movingDirection == "Down") {
-			_movingDirection = "Stop";
-		}
-	}
-	if (_movingDirection == "Stop" && !_intersection) {
-		//Left
-		if (checkLeft(parent_pos)) {
-			directions.push_back(Vector2f(-1.f, 0.f));
-			directionsString.push_back("Left");
-		}
-		// Right
-		if (checkRight(parent_pos)) {
-			directions.push_back(Vector2f(1.f, 0.f));
-			directionsString.push_back("Right");
-		}
-		// Up
-		if (checkUp(parent_pos)) {
-			directions.push_back(Vector2f(0.f, -1.f));
-			directionsString.push_back("Up");
-		}
-		// Down
-		if (checkDown(parent_pos)) {
-			directions.push_back(Vector2f(0.f, 1.f));
-			directionsString.push_back("Down");
-		}
-	}
+		_direction = Vector2f(newDirection);
+		_state = ROTATED;
+		cout << LevelSystem::getTileAt(position + (Vector2f(newDirection) * _ghostSize)) << endl;
+		break;
 
-	for (int i = 0; i < directions.size(); i++) {
-		if (directions[i] != _direction) {
-			finalDirections.push_back(directions[i]);
+	case ROTATED:
+		//have we left the waypoint?
+		if (LevelSystem::getTileAt(position - (_direction * _ghostSize)) != LevelSystem::WAYPOINT) {
+			_state = ROAMING; //yes
 		}
+		move(_direction * movementValue); //No
+		break;
 	}
-	if (finalDirections.size() == 1) {
-		_direction = finalDirections[0];
-		_movingDirection = directionsString[0];
-	}
-	if (finalDirections.size() == 2) {
-		int ran = rand() % 2;
-		_direction = finalDirections[ran];
-		_movingDirection = directionsString[ran];
-	}
-	if (finalDirections.size() == 3) {
-		int ran = rand() % 3;
-		_direction = finalDirections[ran];
-		_movingDirection = directionsString[ran];
-	}
-
-	ActorMovementComponent::move(_direction * (float)(_speed * dt));
-	_intersection = false;
 }
 
-
-bool GhostMovementComponent::checkLeft(Vector2f pos) {
-	return validMove(pos + Vector2f(-_ghostSize, -offset)) &&
-		validMove(pos + Vector2f(-_ghostSize, offset));
-}
-bool GhostMovementComponent::checkRight(Vector2f pos) {
-	return validMove(pos + Vector2f(_ghostSize, -offset)) &&
-		validMove(pos + Vector2f(_ghostSize, offset));
-}
-bool GhostMovementComponent::checkUp(Vector2f pos) {
-	return validMove(pos + Vector2f(-offset, -_ghostSize)) &&
-		validMove(pos + Vector2f(offset, -_ghostSize));
-}
-bool GhostMovementComponent::checkDown(Vector2f pos) {
-	return validMove(pos + Vector2f(-offset, _ghostSize)) &&
-		validMove(pos + Vector2f(offset, _ghostSize));
-}
 
 
 

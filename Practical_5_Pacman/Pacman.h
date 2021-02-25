@@ -1,9 +1,14 @@
 #pragma once
 #include "Scene.h"
+#include "ecm.h"
+#include "maths.h"
+
+using namespace std;
 
 extern std::shared_ptr<Scene> gameScene;
 extern std::shared_ptr<Scene> menuScene;
 extern std::shared_ptr<Scene> activeScene;
+
 
 class MenuScene : public Scene {
 private:
@@ -19,12 +24,20 @@ public:
 class GameScene : public Scene {
 private:
 	sf::Text text;
+	bool big;
 	sf::Clock scoreClock;
-	void respawn();
+	std::shared_ptr<Entity> player;
+	std::vector<std::shared_ptr<Entity>> ghosts;
+	std::vector<std::shared_ptr<Entity>> nibbles;
 
 public:
 	GameScene() = default;
 	void update(double dt) override;
 	void render() override;
 	void load() override;
+	void respawn() override;
+	//std::shared_ptr<Entity> makeNibble(const Vector2ul& nl, bool big);
 };
+
+
+
