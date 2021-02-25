@@ -71,7 +71,7 @@ void GameScene::load() {
 								 {70, 191, 238},    // cyan Inky
 								 {234, 130, 229} }; // pink Pinky
 
-	for (int i = 0; i < 1; ++i) {
+	for (int i = 0; i < 4; ++i) {
 		auto ghost = make_shared<Entity>();
 		auto s = ghost->addComponent<ShapeComponent>();
 		s->setShape<sf::CircleShape>(_ghostSize);

@@ -11,6 +11,10 @@ private:
 	string _movingDirection;
 	float offset;
 	Vector2f oldPosition;
+	bool checkUp(Vector2f vec);
+	bool checkDown(Vector2f vec);
+	bool checkLeft(Vector2f vec);
+	bool checkRight(Vector2f vec);
 
 public:
 	explicit GhostMovementComponent(Entity* p);
