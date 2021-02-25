@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #include "ecm.h"
 #include "cmp_actor_movement.h"
 
@@ -11,6 +12,7 @@ private:
 	string _movingDirection;
 	float offset;
 	Vector2f oldPosition;
+	bool _intersection;
 	bool checkUp(Vector2f vec);
 	bool checkDown(Vector2f vec);
 	bool checkLeft(Vector2f vec);
