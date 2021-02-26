@@ -10,6 +10,7 @@
 #include "components/cmp_ghost_movement.h"
 #include "components/cmp_pickup.h"
 #include "maths.h"
+#include <memory>
 
 
 using namespace std;
@@ -23,6 +24,8 @@ std::vector<shared_ptr<Entity>> ghosts;
 std::vector<shared_ptr<Entity>> nibbles;
 EntityManager _ents;
 static Clock keboardTime;
+
+
 
 void MenuScene::load() {
 	keboardTime.restart();
@@ -57,11 +60,29 @@ void MenuScene::render() {
 	Renderer::queue(&text);
 }
 
+std::shared_ptr<Entity> GameScene::makeNibble(const Vector2ul& nl, bool big) {
+	auto cherry = make_shared<Entity>();
+	auto s = cherry->addComponent<ShapeComponent>();
+	if (big == true) {
+		s->setShape<sf::CircleShape>(6.f);
+		s->getShape().setFillColor(Color::Cyan);
+
+		cherry->setPosition(ls::getTilePosition(nl) + Vector2f(6.f, 6.f));
+	}
+
+	else {
+		s->getShape().setFillColor(Color::White);
+		s->setShape<sf::CircleShape>(3.f);
+		cherry->setPosition(ls::getTilePosition(nl) + Vector2f(9.f, 9.f));
+	}
+	cherry->addComponent<PickupComponent>(big);
+	return cherry;
+}
 void GameScene::load() {
 	{
 		ls::setColor(ls::TILE::WALL, sf::Color::Color(0x002121DEff));
 		ls::loadLevelFile("res/pacman.txt", _tileSize);
-
+	
 		player = make_shared<Entity>();
 		auto s = player->addComponent<ShapeComponent>();
 		s->setShape<sf::CircleShape>(_playerSize);
@@ -93,6 +114,17 @@ void GameScene::load() {
 		_ents.list.push_back(ghost);
 	}
 
+	auto nibbleLoc = LevelSystem::findTiles(LevelSystem::EMPTY);
+	for (const auto& nl : nibbleLoc) {
+		auto cherry = makeNibble(nl, false);
+		nibbles.push_back(cherry);
+	}
+	nibbleLoc = LevelSystem::findTiles(LevelSystem::WAYPOINT);
+	for (const auto& nl : nibbleLoc) {
+		auto cherry = makeNibble(nl, true);
+		nibbles.push_back(cherry);
+	}
+
 	// Print the level to the console
 	for (size_t y = 0; y < ls::getHeight(); ++y) {
 		for (size_t x = 0; x < ls::getWidth(); ++x) {
@@ -102,9 +134,6 @@ void GameScene::load() {
 	}
 }
 
-//std::shared_ptr<Entity> GameScene::makeNibble(const Vector2ul& nl, bool big) {
-//	return shared_ptr<Entity>();
-//}
 
 void GameScene::update(double dt) {
 	//Using a timer will allow me to use the same key to switch between scenes
@@ -120,16 +149,24 @@ void GameScene::update(double dt) {
 	}
 
 	for (auto& g : ghosts) {
-		if (length(g->getPosition() - player->getPosition()) < 30.0f) {
+		if (length(g->getPosition() - player->getPosition()) < _ghostSize) {
 			respawn();
 		}
 	}
 
+	for (auto& n : nibbles) {
+		n->update(dt);
+	}
 	_ents.update(dt);
 }
 
 void GameScene::render() {
 	ls::Render(Renderer::getWindow());
+
+	for (auto& n : nibbles) {
+		n->render();
+	}
+
 	_ents.render();
 }
 
@@ -145,6 +182,14 @@ void GameScene::respawn() {
 			ls::getTilePosition(ghost_spawns[i++]) + Vector2f(_ghostSize, _ghostSize));
 		g->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(300.0f);
 	}
+
+	for (auto n : nibbles) {
+		n->setForDelete();
+		n.reset();
+	}
+
+	nibbles.clear();
 }
+
 
 

@@ -48,10 +48,7 @@ void GhostMovementComponent::update(double dt) {
 			LevelSystem::getTileAt(position + (Vector2f(newDirection) * _ghostSize)) == LevelSystem::WALL) {
 			newDirection = directions[(rand() % 4)];
 		}
-		if (newDirection == badDirection) {
-			_state = ROTATING;
-			break;
-		}
+
 		_direction = Vector2f(newDirection);
 		_state = ROTATED;
 		cout << LevelSystem::getTileAt(position + (Vector2f(newDirection) * _ghostSize)) << endl;
