@@ -8,6 +8,7 @@ using namespace std;
 extern std::shared_ptr<Scene> gameScene;
 extern std::shared_ptr<Scene> menuScene;
 extern std::shared_ptr<Scene> activeScene;
+extern EntityManager _ents;
 
 class MenuScene : public Scene {
 private:

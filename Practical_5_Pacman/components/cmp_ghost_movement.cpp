@@ -51,7 +51,7 @@ void GhostMovementComponent::update(double dt) {
 
 		_direction = Vector2f(newDirection);
 		_state = ROTATED;
-		cout << LevelSystem::getTileAt(position + (Vector2f(newDirection) * _ghostSize)) << endl;
+		//cout << LevelSystem::getTileAt(position + (Vector2f(newDirection) * _ghostSize)) << endl;
 		break;
 
 	case ROTATED:
