@@ -8,14 +8,15 @@ using namespace std;
 class PickupComponent : public Component {
 protected:
 	std::shared_ptr<sf::Shape> _shape;
-
+private:
+	bool _isBig;
 public:
 	PickupComponent() = delete;
-	explicit PickupComponent(Entity* p, bool big);
+	explicit PickupComponent(Entity* p, bool _isBig);
 
 	void update(double dt) override;
 	void render() override;
-
+	bool isBig();
 	sf::Shape& getShape() const;
 
 	template <typename T, typename... Targs>

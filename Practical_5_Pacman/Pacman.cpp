@@ -22,9 +22,9 @@ std::shared_ptr<Scene> activeScene;
 std::shared_ptr<Entity> player;
 std::vector<shared_ptr<Entity>> ghosts;
 std::vector<shared_ptr<Entity>> nibbles;
+int GameScene::scoreValue;
 EntityManager _ents;
 static Clock keboardTime;
-
 
 
 void MenuScene::load() {
@@ -34,10 +34,13 @@ void MenuScene::load() {
 	// Set titleText properties
 	text.setFont(font);
 	text.setCharacterSize(70);
-	// Centering titleText
+	// Centering text
 	sf::FloatRect textRect = text.getLocalBounds();
 	text.setOrigin(textRect.width / 2, textRect.height / 2);
-	text.setPosition(sf::Vector2f(ls::getWindowWidth() / 10, ls::getWindowHeight() / 3));
+	text.setPosition(sf::Vector2f(ls::getWindowWidth()/3, ls::getWindowHeight() / 3));
+	text.setString("PAUSE");
+
+
 }
 
 void MenuScene::update(double dt) {
@@ -52,18 +55,16 @@ void MenuScene::update(double dt) {
 			timeElapsed += keboardTime.restart();
 		}
 	}
-
-	text.setString("Almost Pacman");
 }
 
 void MenuScene::render() {
 	Renderer::queue(&text);
 }
 
-std::shared_ptr<Entity> GameScene::makeNibble(const Vector2ul& nl, bool big) {
+std::shared_ptr<Entity> GameScene::makeNibble(const Vector2ul& nl, bool _isBig) {
 	auto cherry = make_shared<Entity>();
 	auto s = cherry->addComponent<ShapeComponent>();
-	if (big == true) {
+	if (_isBig == true) {
 		s->setShape<sf::CircleShape>(6.f);
 		s->getShape().setFillColor(Color::Cyan);
 
@@ -75,7 +76,7 @@ std::shared_ptr<Entity> GameScene::makeNibble(const Vector2ul& nl, bool big) {
 		s->setShape<sf::CircleShape>(3.f);
 		cherry->setPosition(ls::getTilePosition(nl) + Vector2f(9.f, 9.f));
 	}
-	cherry->addComponent<PickupComponent>(big);
+	cherry->addComponent<PickupComponent>(_isBig);
 	return cherry;
 }
 void GameScene::load() {
@@ -114,16 +115,7 @@ void GameScene::load() {
 		_ents.list.push_back(ghost);
 	}
 
-	auto nibbleLoc = LevelSystem::findTiles(LevelSystem::EMPTY);
-	for (const auto& nl : nibbleLoc) {
-		auto cherry = makeNibble(nl, false);
-		nibbles.push_back(cherry);
-	}
-	nibbleLoc = LevelSystem::findTiles(LevelSystem::WAYPOINT);
-	for (const auto& nl : nibbleLoc) {
-		auto cherry = makeNibble(nl, true);
-		nibbles.push_back(cherry);
-	}
+	createNibbles();
 
 	// Print the level to the console
 	for (size_t y = 0; y < ls::getHeight(); ++y) {
@@ -132,6 +124,23 @@ void GameScene::load() {
 		}
 		cout << endl;
 	}
+
+	//Setting up scoreText & scoreValueText
+	scoreText.setFont(font);
+	scoreText.setCharacterSize(20);	
+	scoreValueText.setFont(font);
+	scoreValueText.setCharacterSize(20);
+	// Formatting scoreText
+	sf::FloatRect scoreTextRect = scoreText.getLocalBounds();
+	scoreText.setOrigin(scoreTextRect.width / 2, scoreTextRect.height / 2);
+	scoreText.setFillColor(Color::Black);
+	scoreText.setPosition(sf::Vector2f(10, 1));
+	scoreText.setString("Score: ");
+	sf::FloatRect scoreValueTextRect = scoreValueText.getLocalBounds();
+	scoreValueText.setOrigin(scoreValueTextRect.width / 2, scoreValueTextRect.height / 2);
+	scoreValueText.setFillColor(Color::Black);
+	scoreValueText.setPosition(sf::Vector2f(85, 1));
+	scoreValueText.setString("");
 }
 
 
@@ -156,12 +165,17 @@ void GameScene::update(double dt) {
 
 	for (auto& n : nibbles) {
 		n->update(dt);
+		if (n->isVisible()) {
+		}
 	}
 	_ents.update(dt);
+	scoreValueText.setString(to_string(scoreValue));
 }
 
 void GameScene::render() {
 	ls::Render(Renderer::getWindow());
+	Renderer::queue(&scoreText);
+	Renderer::queue(&scoreValueText);
 
 	for (auto& n : nibbles) {
 		n->render();
@@ -180,15 +194,28 @@ void GameScene::respawn() {
 	for (auto& g : ghosts) {
 		g->setPosition(
 			ls::getTilePosition(ghost_spawns[i++]) + Vector2f(_ghostSize, _ghostSize));
-		g->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(300.0f);
+		g->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(100.0f);
 	}
 
 	for (auto n : nibbles) {
 		n->setForDelete();
 		n.reset();
 	}
-
+	scoreValue = 0;
 	nibbles.clear();
+	createNibbles();
+}
+void GameScene::createNibbles() {
+	auto nibbleLoc = LevelSystem::findTiles(LevelSystem::EMPTY);
+	for (const auto& nl : nibbleLoc) {
+		auto cherry = makeNibble(nl, false);
+		nibbles.push_back(cherry);
+	}
+	nibbleLoc = LevelSystem::findTiles(LevelSystem::WAYPOINT);
+	for (const auto& nl : nibbleLoc) {
+		auto cherry = makeNibble(nl, true);
+		nibbles.push_back(cherry);
+	}
 }
 
 

@@ -10,7 +10,7 @@ static Clock ghostTimer;
 
 GhostMovementComponent::GhostMovementComponent(Entity* p)
 	: ActorMovementComponent(p) {
-	_speed = 300.f;
+	_speed = 100.f;
 	_state = ROAMING;
 	_direction = Vector2f(0.f, -1.f);
 	// srand is the seed to create a random number

@@ -24,7 +24,7 @@ public:
 class GameScene : public Scene {
 
 private:
-	sf::Text text;
+	sf::Text scoreText;
 	sf::Clock scoreClock;
 	std::shared_ptr<Entity> player;
 	std::vector<std::shared_ptr<Entity>> ghosts;
@@ -36,7 +36,10 @@ public:
 	void render() override;
 	void load() override;
 	void respawn() override;
-	std::shared_ptr<Entity> makeNibble(const sf::Vector2ul& nl, bool big);
+	void createNibbles();
+	static int scoreValue;
+	sf::Text scoreValueText;
+	std::shared_ptr<Entity> makeNibble(const sf::Vector2ul& nl, bool _isBig);
 };
 
 
