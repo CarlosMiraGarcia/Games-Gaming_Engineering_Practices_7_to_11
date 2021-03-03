@@ -7,8 +7,7 @@
 
 class Component; //forward declare
 
-class Entity{
-
+class Entity {
 protected:
 	std::vector<std::shared_ptr<Component>> _components;
 	sf::Vector2f _position;
@@ -37,7 +36,7 @@ public:
 	void setPowerUp(bool _powerUp);
 	void setForDelete();
 	bool isVisible() const;
-	void setVisible(bool _visible);	
+	void setVisible(bool _visible);
 	char getName();
 	void setName(char _name);
 
@@ -97,7 +96,6 @@ public:
 	virtual ~Component();
 };
 
-
 // Will return a T component, or anything derived from a T
 // component.
 template <typename T>
@@ -113,7 +111,3 @@ const std::vector<std::shared_ptr<T>> GetCompatibleComponent() {
 	}
 	return ret;
 }
-
-
-
-

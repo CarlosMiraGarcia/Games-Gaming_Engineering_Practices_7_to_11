@@ -1,9 +1,7 @@
 #include "Scene.h"
 
-void Scene::update(double dt) { }
+void Scene::update(double dt) {}
 
-void Scene::render() { }
+void Scene::render() {}
 
-void Scene::respawn() { }
-
-
+void Scene::respawn() {}

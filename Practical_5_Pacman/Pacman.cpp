@@ -12,7 +12,6 @@
 #include "maths.h"
 #include <memory>
 
-
 using namespace std;
 
 sf::Font font;
@@ -22,11 +21,10 @@ std::shared_ptr<Scene> activeScene;
 std::shared_ptr<Entity> player;
 std::vector<shared_ptr<Entity>> ghosts;
 std::vector<shared_ptr<Entity>> nibbles;
-int GameScene::scoreValue= 0;
+int GameScene::scoreValue = 0;
 int GameScene::highScoreValue = 0;
 EntityManager _ents;
 static Clock keyboardTime;
-
 
 void MenuScene::load() {
 	keyboardTime.restart();
@@ -105,7 +103,7 @@ void GameScene::load() {
 		vector<Vector2ul> tile = ls::findTiles(ls::TILE::ENEMY);
 		ghost->setPosition(Vector2f(ls::getTilePosition(tile[i]) + Vector2f(_ghostSize, _ghostSize)));
 		ghost->addComponent<GhostMovementComponent>();
-		ghost->setName(ghost_name[i]);		
+		ghost->setName(ghost_name[i]);
 
 		ghosts.push_back(ghost);
 		_ents.list.push_back(ghost);
@@ -155,7 +153,6 @@ void GameScene::load() {
 	highScoreValueText.setString("");
 }
 
-
 void GameScene::update(double dt) {
 	//Using a timer will allow me to use the same key to switch between scenes
 	//It is needed to leave some miliseconds between switches, otherwise it will
@@ -197,7 +194,7 @@ void GameScene::update(double dt) {
 		//Check each of the ghosts
 		for (auto& g : ghosts) {
 			//Get the component shape from the ghost list
-			auto ghost = g ->GetCompatibleComponent<ShapeComponent>();
+			auto ghost = g->GetCompatibleComponent<ShapeComponent>();
 			//Get the shared component
 			auto compG = ghost.back();
 			//Change the color of the ghost to white while the power up is activated
@@ -207,12 +204,13 @@ void GameScene::update(double dt) {
 		timeElapsed = changingColourTimer.getElapsedTime();
 		//If the time elapsed > 0.1
 		if (timeElapsed.asSeconds() > 0.1) {
-			compP->getShape().setFillColor(Color(Color::Yellow));	//Colour the player Yellow
+			//Colour the player Yellow
+			compP->getShape().setFillColor(Color(Color::Yellow));
 		}
 		//If the time elapsed > 0
-		if (timeElapsed.asSeconds() > 0  && timeElapsed.asSeconds() < 0.1){
-			compP->getShape().setFillColor(Color(Color::Red));//Colour the player Red
-
+		if (timeElapsed.asSeconds() > 0 && timeElapsed.asSeconds() < 0.1) {
+			//Colour the player Red
+			compP->getShape().setFillColor(Color(Color::Red));
 		}
 		//If the time elapsed > 0.2
 		if (timeElapsed.asSeconds() > 0.2) {
@@ -228,7 +226,7 @@ void GameScene::update(double dt) {
 
 		for (auto& g : ghosts) {
 			auto ghostComp = g->GetCompatibleComponent<ShapeComponent>();
-			auto compG = ghostComp.back();	
+			auto compG = ghostComp.back();
 			//Check if the current Ghost has been deleted
 			if (g->is_fordeletion()) {
 				//Find the index that corresponds to the ghost's name
@@ -324,12 +322,14 @@ void GameScene::createNibbles() {
 		auto cherry = makeNibble(nl, false);
 		nibbles.push_back(cherry);
 	}
+	auto nibbleLoc2 = LevelSystem::findTiles(LevelSystem::INTERSECTION);
+	for (const auto& nl : nibbleLoc2) {
+		auto cherry = makeNibble(nl, false);
+		nibbles.push_back(cherry);
+	}
 	nibbleLoc = LevelSystem::findTiles(LevelSystem::WAYPOINT);
 	for (const auto& nl : nibbleLoc) {
 		auto cherry = makeNibble(nl, true);
 		nibbles.push_back(cherry);
 	}
 }
-
-
-

@@ -22,7 +22,6 @@ sf::Font font;
 int scoreValue;
 bool isOver;
 
-
 void GameOver(RenderWindow& window) {
 	window.draw(gameOver);
 }
@@ -63,13 +62,13 @@ void Load() {
 	titleText.setFont(font);
 	titleText.setCharacterSize(28);
 	titleText.setFillColor(sf::Color::Green);
-	titleText.setString("Space Invaders");	
+	titleText.setString("Space Invaders");
 
 	// Centering titleText
 	sf::FloatRect titleRect = titleText.getLocalBounds();
 	titleText.setOrigin(titleRect.width / 2, titleRect.height / 2);
 	titleText.setPosition(sf::Vector2f(gameWidth / 2, 14.0f));
-	
+
 	// Set scoreText and scoreValueText properties
 	scoreText.setFont(font);
 	scoreText.setCharacterSize(18);
@@ -114,15 +113,16 @@ void Update(RenderWindow& window) {
 			return;
 		}
 	}
-	
+
 	// Animation timer decreases with delta time
 	Invader::animationCoolDown -= dt;
 	Bullet::bulletAnimationCD -= dt;
 
 	// We update each of the ships inside the ship array
 	for (auto& s : ships) {
-		if (!s-> is_gameOver()){ 
-			s->Update(dt); }
+		if (!s->is_gameOver()) {
+			s->Update(dt);
+		}
 
 		else {
 			GameOver(window);

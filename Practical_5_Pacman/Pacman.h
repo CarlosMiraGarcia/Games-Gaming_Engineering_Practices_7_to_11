@@ -23,7 +23,6 @@ public:
 };
 
 class GameScene : public Scene {
-
 private:
 	sf::Text scoreText;
 	sf::Text scoreValueText;
@@ -35,11 +34,11 @@ private:
 	std::vector<std::shared_ptr<Entity>> ghosts;
 	std::vector<std::shared_ptr<Entity>> nibbles;
 	sf::Clock changingColourTimer;
-	const sf::Color ghost_cols[4]{	{255, 0, 0},		// red Blinky
+	const sf::Color ghost_cols[4]{ {255, 0, 0},		// red Blinky
 									{255, 184, 82},		// orange Clyde
 									{0, 255, 255},		// cyan Inky
 									{255, 184, 255} };	// pink Pinky
-	const char ghost_name[4]{  'B',    // red Blinky
+	const char ghost_name[4]{ 'B',    // red Blinky
 							   'C',    // orange Clyde
 							   'I',    // cyan Inky
 							   'P' };  // pink Pinky
@@ -53,8 +52,3 @@ public:
 	static int scoreValue;
 	std::shared_ptr<Entity> makeNibble(const sf::Vector2ul& nl, bool _isBig);
 };
-
-
-
-
-

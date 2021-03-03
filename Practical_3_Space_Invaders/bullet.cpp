@@ -23,7 +23,6 @@ void Bullet::Init() {
 }
 // Check the sprite and change it for the next or previous one in order to create animation effect
 void Bullet::Animate(Bullet& b) {
-
 	if (changeAnimation) {
 		b.setTextureRect(IntRect(96, 32, 32, 32));
 		changeAnimation = false;
@@ -68,7 +67,6 @@ void Bullet::Fire(const sf::Vector2f& pos, const bool mode) {
 }
 
 void Bullet::_Update(const float& dt) {
-
 	if (getPosition().y < -32 || getPosition().y > gameHeight + 32) {
 		//off screen - do nothing
 		return;

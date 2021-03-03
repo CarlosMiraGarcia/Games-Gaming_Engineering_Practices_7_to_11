@@ -14,7 +14,6 @@ bool Player::validMove(sf::Vector2f pos) {
 }
 
 void Player::Update(double dt) {
-
 	if (ls::getTileAt(getPosition()) == ls::END && _finished == false) {
 		cout << "YOU WIN" << endl;
 		_finished = true;
@@ -31,10 +30,10 @@ void Player::Update(double dt) {
 			if (validMove(getPosition() + Vector2f(_playerSize, 0.f))) {
 				_direction++;
 				move(sf::Vector2f((_direction ? 1.0f : -1.0f) * _speed * dt, 0));
-			}			
+			}
 		}
-		if (Keyboard::isKeyPressed(controls[2]) && getPosition().y >= _playerSize){
-			if (validMove(getPosition() + Vector2f(0.f, - _playerSize))) {
+		if (Keyboard::isKeyPressed(controls[2]) && getPosition().y >= _playerSize) {
+			if (validMove(getPosition() + Vector2f(0.f, -_playerSize))) {
 				_direction--;
 				move(sf::Vector2f(0, (_direction ? -1.0f : 1.0f) * _speed * dt));
 			}
@@ -45,8 +44,8 @@ void Player::Update(double dt) {
 				move(sf::Vector2f(0, (_direction ? 1.0f : -1.0f) * _speed * dt));
 			}
 		}
-	}		
-	
+	}
+
 	if (!validMove(getPosition())) {
 		cout << "Invalid move " << counter++ << endl;
 	}

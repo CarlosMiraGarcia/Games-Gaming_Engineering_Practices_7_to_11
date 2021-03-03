@@ -2,12 +2,11 @@
 #include "cmp_player_movement.h"
 #include "..\game.h"
 #include <deque>
+#include "../Pacman.h"
 
 using namespace std;
 using namespace sf;
 static const Vector2i directions[] = { {1, 0}, {0, 1}, {0, -1}, {-1, 0} };
-
-static Clock ghostTimer;
 
 GhostMovementComponent::GhostMovementComponent(Entity* p)
 	: ActorMovementComponent(p) {
@@ -34,38 +33,86 @@ void GhostMovementComponent::update(double dt) {
 	switch (_state) {
 	case ROAMING:
 		// Wall in front or at waypoint
-		if (LevelSystem::getTileAt(position - inFront) == LevelSystem::WAYPOINT ||
-			LevelSystem::getTileAt(position + inFront) == LevelSystem::WALL)
-		{
+		if (LevelSystem::getTileAt(position - inFront) == LevelSystem::INTERSECTION ||
+			LevelSystem::getTileAt(position + inFront) == LevelSystem::WALL) {
 			_state = ROTATING;
 		}
 		else {
-			move(movementValue * _direction);
+			move(_direction * movementValue);
 		}
 		break;
 
-	case ROTATING:		
+	case ROTATING:
 		while (newDirection == badDirection || 
-			LevelSystem::getTileAt(position + (Vector2f(newDirection) * _ghostSize)) == LevelSystem::WALL) {
-			newDirection = directions[(rand() % 4)];
+			   LevelSystem::getTileAt(position + (Vector2f(newDirection) * _ghostSize)) == LevelSystem::WALL) {
+			auto dir = findPlayer(position);
+			newDirection = dir;
 		}
 
 		_direction = Vector2f(newDirection);
 		_state = ROTATED;
-		//cout << LevelSystem::getTileAt(position + (Vector2f(newDirection) * _ghostSize)) << endl;
 		break;
 
 	case ROTATED:
 		//have we left the waypoint?
-		if (LevelSystem::getTileAt(position - (_direction * _ghostSize)) != LevelSystem::WAYPOINT) {
+		if (LevelSystem::getTileAt(position - (_direction * _ghostSize)) != LevelSystem::INTERSECTION) {
 			_state = ROAMING; //yes
 		}
 		move(_direction * movementValue); //No
 		break;
 	}
-
 }
 
+Vector2i GhostMovementComponent::findPlayer(Vector2f ghostPosition) {
+	for (auto& e : _ents.list) {
+		auto comps = e->GetCompatibleComponent<PlayerMovementComponent>();
+		if (comps.size() > 0) {
+			auto actComp = comps[0];
+			const Vector2f playerPosition = e->getPosition();
+			const Vector2f wherePlayer = ghostPosition - playerPosition;
+			vector<Vector2f> newDirections;
 
+			if (wherePlayer.x > 0) {
+				newDirections.push_back(Vector2f(-1, 0));
+			}
+			if (wherePlayer.x < 0) {
+				newDirections.push_back(Vector2f(1, 0));
+			}
+			if (wherePlayer.y > 0) {
+				newDirections.push_back(Vector2f(0, -1));
+			}
+			if (wherePlayer.y < 0) {
+				newDirections.push_back(Vector2f(0, 1));
+			}
+			auto ran = rand() % 2;
+			auto returnDirection = Vector2i(newDirections[ran]);
 
+			if (LevelSystem::getTileAt(ghostPosition + (Vector2f(returnDirection) * _ghostSize)) == LevelSystem::WALL) {
+				if (ran == 0) {
+					if (!LevelSystem::getTileAt(ghostPosition + (Vector2f(newDirections[1]) * _ghostSize)) == LevelSystem::WALL) {
+						returnDirection = Vector2i(newDirections[1]);
+					}
+					if (!LevelSystem::getTileAt(ghostPosition + (Vector2f(newDirections[0]) * _ghostSize)) == LevelSystem::WALL) {
+						returnDirection = Vector2i(newDirections[0]);
+					}
+					else {
+						returnDirection = returnDirection * -1;
+					}					
+				}
 
+				else {
+					if (!LevelSystem::getTileAt(ghostPosition + (Vector2f(newDirections[0]) * _ghostSize)) == LevelSystem::WALL) {
+						returnDirection = Vector2i(newDirections[0]);
+					}
+					if (!LevelSystem::getTileAt(ghostPosition + (Vector2f(newDirections[1]) * _ghostSize)) == LevelSystem::WALL) {
+						returnDirection = Vector2i(newDirections[1]);
+					}
+					else {
+						returnDirection = returnDirection * -1;
+					}
+				}
+			}
+			return returnDirection;
+		}
+	}
+}

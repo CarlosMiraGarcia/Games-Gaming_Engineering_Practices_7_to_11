@@ -13,5 +13,5 @@ public:
 	float getSize();
 	bool _finished;
 	Player();
-	void Render(sf::RenderWindow & window) const override;
+	void Render(sf::RenderWindow& window) const override;
 };

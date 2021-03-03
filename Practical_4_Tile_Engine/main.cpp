@@ -20,8 +20,8 @@ void Load() {
 
 	ls::loadLevelFile("res/maze_2.txt", 100.f);
 	ls::setColor(ls::TILE::WALL, sf::Color::Blue);
-;	vector<Vector2ul> tile = ls::findTiles(LevelSystem::TILE::START);
-	player-> setPosition(Vector2f(ls::getTilePosition(tile[0]) + Vector2f(_playerSize, _playerSize)));
+	;	vector<Vector2ul> tile = ls::findTiles(LevelSystem::TILE::START);
+	player->setPosition(Vector2f(ls::getTilePosition(tile[0]) + Vector2f(_playerSize, _playerSize)));
 
 	// Print the level to the console
 	for (size_t y = 0; y < ls::getHeight(); ++y) {
@@ -40,8 +40,8 @@ void Load() {
 	timerText.setFillColor(sf::Color::Black);
 	timerText.setString(to_string(timerValue));
 	sf::FloatRect timerTextRect = timerText.getLocalBounds();
-	timerText.setOrigin(timerTextRect.width /2, timerTextRect.height / 2);
-	timerText.setPosition(sf::Vector2f(ls::getWindowWidth()/2, 10));
+	timerText.setOrigin(timerTextRect.width / 2, timerTextRect.height / 2);
+	timerText.setPosition(sf::Vector2f(ls::getWindowWidth() / 2, 10));
 	// Set timerText properties
 	bestTimer.setFont(font);
 	bestTimer.setCharacterSize(28);
@@ -74,7 +74,7 @@ void Update(RenderWindow& window) {
 	if (Keyboard::isKeyPressed(Keyboard::Escape)) {
 		window.close();
 	}
-		
+
 	player->Update(dt);
 
 	if (player->isFinished() == true) {

@@ -21,5 +21,3 @@ extern sf::Texture spritesheet;
 extern std::vector<Ship*> ships;
 extern Player* player;
 extern int scoreValue;
-
-

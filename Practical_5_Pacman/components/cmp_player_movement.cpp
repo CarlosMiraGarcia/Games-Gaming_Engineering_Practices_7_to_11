@@ -62,5 +62,3 @@ void PlayerMovementComponent::update(double dt) {
 	ActorMovementComponent::move(_direction * (float)(_speed * dt));
 	_direction = Vector2f(0.f, 0.f);
 }
-
-

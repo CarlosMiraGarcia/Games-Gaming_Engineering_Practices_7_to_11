@@ -27,7 +27,6 @@ namespace sf {
 	//Allow casting from one sf::vector internal type to another
 	template <typename T, typename U> Vector2<T> Vcast(const Vector2<U>& v) {
 		return Vector2<T>(static_cast<T>(v.x), static_cast<T>(v.y));
-
 	}
 	//Degrees to radians conversion. atan(1)*4 is the PI number
 	static double deg2rad(double degrees) {

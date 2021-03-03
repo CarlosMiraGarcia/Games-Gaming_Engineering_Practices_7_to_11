@@ -17,8 +17,6 @@ void Load() {
 	menuScene->load();
 	// Start at main menu
 	activeScene = gameScene;
-
-
 }
 void Update(RenderWindow& window) {
 	// Reset clock, recalculate deltatime

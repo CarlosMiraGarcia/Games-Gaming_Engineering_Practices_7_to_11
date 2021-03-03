@@ -10,7 +10,7 @@
 
 class LevelSystem {
 public:
-	enum TILE { EMPTY, START, END, WALL, ENEMY, WAYPOINT };
+	enum TILE { EMPTY, START, END, WALL, ENEMY, WAYPOINT, INTERSECTION};
 
 	static void loadLevelFile(const std::string&, float tileSize = 100.f);
 	static void Render(sf::RenderWindow& window);
@@ -25,12 +25,11 @@ public:
 	//Get Screenspace coordinate of tile
 	static sf::Vector2f getTilePosition(sf::Vector2ul);
 	static std::vector<sf::Vector2ul> findTiles(TILE);
-		
+
 	static size_t getTileSize();
 	static size_t getWindowWidth();
 	static size_t getWindowHeight();
 	static sf::Vector2f getOffset();
-
 
 protected:
 	static std::unique_ptr<TILE[]> _tiles; //Internal array of tiles
@@ -50,4 +49,3 @@ private:
 	LevelSystem() = delete;
 	~LevelSystem() = delete;
 };
-

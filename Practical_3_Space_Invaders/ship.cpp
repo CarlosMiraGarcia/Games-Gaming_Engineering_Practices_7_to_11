@@ -11,7 +11,6 @@ float Invader::speed;
 float Player::speed;
 float Invader::animationCoolDown;
 
-
 // Define our Ship Class
 Ship::Ship() {};
 
@@ -61,7 +60,7 @@ void Invader::Update(const float& dt) {
 	speed = 20.f;
 
 	move(dt * (direction ? 1.0f : -1.0f) * speed, 0);
-	
+
 	// If the invader is not destroyed, the animation will change the sprite in order to create some "movement" effect
 	if (!is_exploded() && animationCoolDown <= 0) {
 		Animate();
@@ -73,7 +72,7 @@ void Invader::Update(const float& dt) {
 		// If time is 0 or lower, set position of invader out of scope
 		if (fadetime <= 0) {
 			setPosition(-100, -100);
-		}		
+		}
 		return;
 	}
 
@@ -95,7 +94,6 @@ void Invader::Update(const float& dt) {
 			firetime = 4.0f + (rand() % 60);
 		}
 	}
-
 }
 
 void Invader::MoveDown() {
