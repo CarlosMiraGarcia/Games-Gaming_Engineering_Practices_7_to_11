@@ -25,7 +25,6 @@ sf::Color LevelSystem::getColor(LevelSystem::TILE t) {
 	return _colours[t];
 }
 
-// I created this, it may not work
 void LevelSystem::setColor(LevelSystem::TILE t, sf::Color c) {
 	_colours[t] = c;
 }
@@ -148,6 +147,5 @@ LevelSystem::TILE LevelSystem::getTileAt(Vector2f v) {
 	}
 	return getTile(Vector2ul((v) / (_tileSize)));
 }
-
 
 sf::Vector2f LevelSystem::getOffset() { return _offset; }

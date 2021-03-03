@@ -28,6 +28,7 @@ public:
 	const sf::Vector2f& getPosition() const;
 	void setPosition(const sf::Vector2f& _position);
 	bool is_fordeletion() const;
+	void setForDeletion(bool _fordeletion);
 	float getRotation() const;
 	void setRotation(float _rotation);
 	bool isAlive() const;

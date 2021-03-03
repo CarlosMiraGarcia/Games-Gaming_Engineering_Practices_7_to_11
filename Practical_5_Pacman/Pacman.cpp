@@ -22,7 +22,8 @@ std::shared_ptr<Scene> activeScene;
 std::shared_ptr<Entity> player;
 std::vector<shared_ptr<Entity>> ghosts;
 std::vector<shared_ptr<Entity>> nibbles;
-int GameScene::scoreValue;
+int GameScene::scoreValue= 0;
+int GameScene::highScoreValue = 0;
 EntityManager _ents;
 static Clock keyboardTime;
 
@@ -39,8 +40,6 @@ void MenuScene::load() {
 	text.setOrigin(textRect.width / 2, textRect.height / 2);
 	text.setPosition(sf::Vector2f(ls::getWindowWidth() / 3, ls::getWindowHeight() / 3));
 	text.setString("PAUSE");
-
-
 }
 
 void MenuScene::update(double dt) {
@@ -127,17 +126,33 @@ void GameScene::load() {
 	scoreText.setCharacterSize(20);
 	scoreValueText.setFont(font);
 	scoreValueText.setCharacterSize(20);
-	// Formatting scoreText
+	// Formatting scoreText & scoreValueText
 	sf::FloatRect scoreTextRect = scoreText.getLocalBounds();
 	scoreText.setOrigin(scoreTextRect.width / 2, scoreTextRect.height / 2);
 	scoreText.setFillColor(Color::Black);
-	scoreText.setPosition(sf::Vector2f(10, 1));
+	scoreText.setPosition(sf::Vector2f(10, 0));
 	scoreText.setString("Score: ");
 	sf::FloatRect scoreValueTextRect = scoreValueText.getLocalBounds();
 	scoreValueText.setOrigin(scoreValueTextRect.width / 2, scoreValueTextRect.height / 2);
 	scoreValueText.setFillColor(Color::Black);
-	scoreValueText.setPosition(sf::Vector2f(85, 1));
+	scoreValueText.setPosition(sf::Vector2f(85, 0));
 	scoreValueText.setString("");
+	//Setting up highScoreText & highScoreValueText
+	highScoreText.setFont(font);
+	highScoreText.setCharacterSize(20);
+	highScoreValueText.setFont(font);
+	highScoreValueText.setCharacterSize(20);
+	// Formatting highScoreText & highScoreValueText
+	sf::FloatRect highScoreTextRect = scoreText.getLocalBounds();
+	highScoreText.setOrigin(highScoreTextRect.width / 2, highScoreTextRect.height / 2);
+	highScoreText.setFillColor(Color::Black);
+	highScoreText.setPosition(sf::Vector2f(450, 0));
+	highScoreText.setString("HighScore: ");
+	sf::FloatRect highScoreValueTextRect = highScoreValueText.getLocalBounds();
+	highScoreValueText.setOrigin(highScoreValueTextRect.width / 2, highScoreValueTextRect.height / 2);
+	highScoreValueText.setFillColor(Color::Black);
+	highScoreValueText.setPosition(sf::Vector2f(575, 0));
+	highScoreValueText.setString("");
 }
 
 
@@ -146,8 +161,9 @@ void GameScene::update(double dt) {
 	//It is needed to leave some miliseconds between switches, otherwise it will
 	//take everystroke for everyframe since the game updates several times per
 	//second
-	Time timeElapsed = changingColour.getElapsedTime();
+	Time timeElapsed = changingColourTimer.getElapsedTime();
 	Time timeElapsedKeyboard = keyboardTime.getElapsedTime();
+
 	if (timeElapsedKeyboard.asSeconds() >= 0.2) {
 		if (Keyboard::isKeyPressed(Keyboard::Space)) {
 			activeScene = menuScene;
@@ -171,24 +187,38 @@ void GameScene::update(double dt) {
 		}
 	}
 
+	//If the player power up is activated
 	if (player->isPowerUp()) {
+		//Get the component Shape from the _ents list
 		auto p = _ents.list[0]->GetCompatibleComponent<ShapeComponent>();
+		//Get the shared component
 		auto compP = p.back();
 
+		//Check each of the ghosts
 		for (auto& g : ghosts) {
+			//Get the component shape from the ghost list
 			auto ghost = g ->GetCompatibleComponent<ShapeComponent>();
+			//Get the shared component
 			auto compG = ghost.back();
+			//Change the color of the ghost to white while the power up is activated
 			compG->getShape().setFillColor(Color(Color::White));
 		}
-		timeElapsed = changingColour.getElapsedTime();
+		//Retrieve the time elapsed
+		timeElapsed = changingColourTimer.getElapsedTime();
+		//If the time elapsed > 0.1
 		if (timeElapsed.asSeconds() > 0.1) {
-			compP->getShape().setFillColor(Color(Color::Yellow));
+			compP->getShape().setFillColor(Color(Color::Yellow));	//Colour the player Yellow
 		}
+		//If the time elapsed > 0
 		if (timeElapsed.asSeconds() > 0  && timeElapsed.asSeconds() < 0.1){
-			compP->getShape().setFillColor(Color(Color::Red));
+			compP->getShape().setFillColor(Color(Color::Red));//Colour the player Red
+
 		}
+		//If the time elapsed > 0.2
 		if (timeElapsed.asSeconds() > 0.2) {
-			changingColour.restart();
+			//Restart the timer so the player can be colored Yellow again
+			//and the colouring cycle starts
+			changingColourTimer.restart();
 		}
 	}
 	if (!player->isPowerUp()) {
@@ -197,8 +227,30 @@ void GameScene::update(double dt) {
 		CompP->getShape().setFillColor(Color(Color::Yellow));
 
 		for (auto& g : ghosts) {
-			auto ghost = g->GetCompatibleComponent<ShapeComponent>();
-			auto compG = ghost.back();
+			auto ghostComp = g->GetCompatibleComponent<ShapeComponent>();
+			auto compG = ghostComp.back();	
+			//Check if the current Ghost has been deleted
+			if (g->is_fordeletion()) {
+				//Find the index that corresponds to the ghost's name
+				size_t index;
+				for (index = 0; ghost_name[index] != g->getName(); index++) {}
+				//Set the ghost at index "index" alive, visible and not for deletetion
+				ghosts[index]->setAlive(true);
+				ghosts[index]->setVisible(true);
+				ghosts[index]->setForDeletion(false);
+				//get the ActorMovementComponent
+				auto g = ghosts[index]->GetCompatibleComponent<ActorMovementComponent>()[0];
+				//Speed up the ghost after is have been eaten
+				g->setSpeed(g->getSpeed() * 1.5);
+				//Set up the ghost to respawn in the original tile where he spawned
+				vector<Vector2ul> tile = ls::findTiles(ls::TILE::ENEMY);
+				ghosts[index]->setPosition(Vector2f(ls::getTilePosition(tile[index]) + Vector2f(_ghostSize, _ghostSize)));
+				//Add it to the _ents list, since it has been removed when it was eaten by the player
+				_ents.list.push_back(ghosts[index]);
+			}
+
+			//Get the name of the created ghost and set the fill colour
+			//using the name to get the right colour.
 			switch (g->getName()) {
 			case 'B':
 				compG->getShape().setFillColor(Color(ghost_cols[0]));
@@ -220,12 +272,15 @@ void GameScene::update(double dt) {
 
 	_ents.update(dt);
 	scoreValueText.setString(to_string(scoreValue));
+	highScoreValueText.setString(to_string(highScoreValue));
 }
 
 void GameScene::render() {
 	ls::Render(Renderer::getWindow());
 	Renderer::queue(&scoreText);
 	Renderer::queue(&scoreValueText);
+	Renderer::queue(&highScoreText);
+	Renderer::queue(&highScoreValueText);
 
 	for (auto& n : nibbles) {
 		n->render();
@@ -254,6 +309,10 @@ void GameScene::respawn() {
 	for (auto n : nibbles) {
 		n->setForDelete();
 		n.reset();
+	}
+
+	if (highScoreValue < scoreValue) {
+		highScoreValue = scoreValue;
 	}
 	scoreValue = 0;
 	nibbles.clear();

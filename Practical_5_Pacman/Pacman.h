@@ -26,11 +26,15 @@ class GameScene : public Scene {
 
 private:
 	sf::Text scoreText;
+	sf::Text scoreValueText;
+	static int highScoreValue;
+	sf::Text highScoreText;
+	sf::Text highScoreValueText;
 	sf::Clock scoreClock;
 	std::shared_ptr<Entity> player;
 	std::vector<std::shared_ptr<Entity>> ghosts;
 	std::vector<std::shared_ptr<Entity>> nibbles;
-	sf::Clock changingColour;
+	sf::Clock changingColourTimer;
 	const sf::Color ghost_cols[4]{	{255, 0, 0},		// red Blinky
 									{255, 184, 82},		// orange Clyde
 									{0, 255, 255},		// cyan Inky
@@ -47,7 +51,6 @@ public:
 	void respawn() override;
 	void createNibbles();
 	static int scoreValue;
-	sf::Text scoreValueText;
 	std::shared_ptr<Entity> makeNibble(const sf::Vector2ul& nl, bool _isBig);
 };
 

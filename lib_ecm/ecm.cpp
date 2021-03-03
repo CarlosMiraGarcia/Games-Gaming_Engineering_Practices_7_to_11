@@ -24,6 +24,7 @@ void Entity::update(double dt) {
 
 bool Entity::is_fordeletion() const { return _fordeletion; }
 
+
 void Entity::render() {
 	if (!_visible) {
 		return;
@@ -56,6 +57,8 @@ void Entity::setForDelete() {
 	_fordeletion = true;
 	_visible = false;
 }
+void Entity::setForDeletion(bool _fordeletion) { Entity::_fordeletion = _fordeletion; }
+
 
 bool Entity::isVisible() const { return _visible; }
 
@@ -72,6 +75,7 @@ Entity::~Entity() {}
 Component::~Component() {}
 
 bool Component::is_fordeletion() const { return _fordeletion; }
+
 
 void EntityManager::update(double dt) {
 	for (size_t i = 0; i < list.size(); i++) {
