@@ -13,9 +13,11 @@ protected:
 	std::vector<std::shared_ptr<Component>> _components;
 	sf::Vector2f _position;
 	float _rotation;
-	bool _alive;       // should be updated
-	bool _visible;     // should be rendered
-	bool _fordeletion; // should be deleted
+	bool _alive;        // should be updated
+	bool _powerUp;      // should be eating
+	bool _visible;      // should be rendered
+	bool _fordeletion;  // should be deleted
+	char _name;		// name
 
 public:
 	Entity();
@@ -30,9 +32,13 @@ public:
 	void setRotation(float _rotation);
 	bool isAlive() const;
 	void setAlive(bool _alive);
+	bool isPowerUp() const;
+	void setPowerUp(bool _powerUp);
 	void setForDelete();
 	bool isVisible() const;
-	void setVisible(bool _visible);
+	void setVisible(bool _visible);	
+	char getName();
+	void setName(char _name);
 
 	template <typename T, typename... Targs>
 	std::shared_ptr<T> addComponent(Targs... params) {

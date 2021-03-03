@@ -1,6 +1,7 @@
 #include "cmp_player_movement.h"
 #include "..\Pacman.h"
 #include "..\game.h"
+#include "cmp_pickup.h"
 
 using namespace std;
 using namespace sf;
@@ -12,6 +13,22 @@ PlayerMovementComponent::PlayerMovementComponent(Entity* p)
 }
 
 void PlayerMovementComponent::update(double dt) {
+	Time timeElapsed = powerUpTimer.getElapsedTime();
+
+	if (_parent->isPowerUp() && _isTimerFinished) {
+		powerUpTimer.restart();
+		setSpeed(getSpeed() * 2);
+		_isTimerFinished = false;
+		timeElapsed = powerUpTimer.getElapsedTime();
+	}
+
+	if (_parent->isPowerUp() && timeElapsed.asSeconds() > 8) {
+		setSpeed(getSpeed() / 2);
+		powerUpTimer.restart();
+		_isTimerFinished = true;
+		_parent->setPowerUp(false);
+	}
+
 	Vector2f parent_pos = _parent->getPosition();
 	//Left
 	if (Keyboard::isKeyPressed(controls[0])) {
@@ -42,12 +59,8 @@ void PlayerMovementComponent::update(double dt) {
 		}
 	}
 
-	if (LevelSystem::getTileAt(parent_pos) == LevelSystem::ENEMY) {
-		gameScene->respawn();
-	}
-
-
 	ActorMovementComponent::move(_direction * (float)(_speed * dt));
 	_direction = Vector2f(0.f, 0.f);
 }
+
 

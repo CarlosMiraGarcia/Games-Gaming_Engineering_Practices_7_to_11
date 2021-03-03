@@ -3,6 +3,7 @@
 #include "ecm.h"
 #include "maths.h"
 
+using namespace sf;
 using namespace std;
 
 extern std::shared_ptr<Scene> gameScene;
@@ -29,7 +30,15 @@ private:
 	std::shared_ptr<Entity> player;
 	std::vector<std::shared_ptr<Entity>> ghosts;
 	std::vector<std::shared_ptr<Entity>> nibbles;
-
+	sf::Clock changingColour;
+	const sf::Color ghost_cols[4]{	{255, 0, 0},		// red Blinky
+									{255, 184, 82},		// orange Clyde
+									{0, 255, 255},		// cyan Inky
+									{255, 184, 255} };	// pink Pinky
+	const char ghost_name[4]{  'B',    // red Blinky
+							   'C',    // orange Clyde
+							   'I',    // cyan Inky
+							   'P' };  // pink Pinky
 public:
 	GameScene() = default;
 	void update(double dt) override;

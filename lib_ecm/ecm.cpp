@@ -4,7 +4,7 @@ using namespace std;
 
 Entity::Entity()
 	: _position({ 0, 0 }), _rotation(0), _alive(true), _visible(true),
-	_fordeletion(false) {
+	_fordeletion(false), _powerUp(false), _name() {
 }
 
 void Entity::update(double dt) {
@@ -47,6 +47,10 @@ bool Entity::isAlive() const { return _alive; }
 
 void Entity::setAlive(bool _alive) { Entity::_alive = _alive; }
 
+bool Entity::isPowerUp() const { return _powerUp; }
+
+void Entity::setPowerUp(bool _powerUp) { Entity::_powerUp = _powerUp; }
+
 void Entity::setForDelete() {
 	_alive = false;
 	_fordeletion = true;
@@ -56,6 +60,10 @@ void Entity::setForDelete() {
 bool Entity::isVisible() const { return _visible; }
 
 void Entity::setVisible(bool _visible) { Entity::_visible = _visible; }
+
+char Entity::getName() { return _name; }
+
+void Entity::setName(char _name) { Entity::_name = _name; }
 
 Component::Component(Entity* const p) : _parent(p), _fordeletion(false) {}
 

@@ -1,4 +1,5 @@
 #include "cmp_ghost_movement.h"
+#include "cmp_player_movement.h"
 #include "..\game.h"
 #include <deque>
 
@@ -62,6 +63,7 @@ void GhostMovementComponent::update(double dt) {
 		move(_direction * movementValue); //No
 		break;
 	}
+
 }
 
 

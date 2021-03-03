@@ -24,11 +24,11 @@ std::vector<shared_ptr<Entity>> ghosts;
 std::vector<shared_ptr<Entity>> nibbles;
 int GameScene::scoreValue;
 EntityManager _ents;
-static Clock keboardTime;
+static Clock keyboardTime;
 
 
 void MenuScene::load() {
-	keboardTime.restart();
+	keyboardTime.restart();
 	//Load font-face from res direction
 	font.loadFromFile("res/Fira.otf");
 	// Set titleText properties
@@ -37,7 +37,7 @@ void MenuScene::load() {
 	// Centering text
 	sf::FloatRect textRect = text.getLocalBounds();
 	text.setOrigin(textRect.width / 2, textRect.height / 2);
-	text.setPosition(sf::Vector2f(ls::getWindowWidth()/3, ls::getWindowHeight() / 3));
+	text.setPosition(sf::Vector2f(ls::getWindowWidth() / 3, ls::getWindowHeight() / 3));
 	text.setString("PAUSE");
 
 
@@ -48,11 +48,11 @@ void MenuScene::update(double dt) {
 	//It is needed to leave some miliseconds between switches, otherwise it will
 	//take everystroke for everyframe since the game updates several times per
 	//second
-	Time timeElapsed = keboardTime.getElapsedTime();
-	if (timeElapsed.asSeconds() >= 0.2) {
+	Time timeElapsedKeyboard = keyboardTime.getElapsedTime();
+	if (timeElapsedKeyboard.asSeconds() >= 0.2) {
 		if (Keyboard::isKeyPressed(Keyboard::Space)) {
 			activeScene = gameScene;
-			timeElapsed += keboardTime.restart();
+			timeElapsedKeyboard += keyboardTime.restart();
 		}
 	}
 }
@@ -65,15 +65,15 @@ std::shared_ptr<Entity> GameScene::makeNibble(const Vector2ul& nl, bool _isBig) 
 	auto cherry = make_shared<Entity>();
 	auto s = cherry->addComponent<ShapeComponent>();
 	if (_isBig == true) {
-		s->setShape<sf::CircleShape>(6.f);
-		s->getShape().setFillColor(Color::Cyan);
+		s->setShape<sf::CircleShape>(7.5f);
+		s->getShape().setFillColor(Color(255, 185, 150));
 
 		cherry->setPosition(ls::getTilePosition(nl) + Vector2f(6.f, 6.f));
 	}
 
 	else {
-		s->getShape().setFillColor(Color::White);
-		s->setShape<sf::CircleShape>(3.f);
+		s->getShape().setFillColor(Color(255, 185, 150));
+		s->setShape<sf::CircleShape>(2.5f);
 		cherry->setPosition(ls::getTilePosition(nl) + Vector2f(9.f, 9.f));
 	}
 	cherry->addComponent<PickupComponent>(_isBig);
@@ -83,7 +83,7 @@ void GameScene::load() {
 	{
 		ls::setColor(ls::TILE::WALL, sf::Color::Color(0x002121DEff));
 		ls::loadLevelFile("res/pacman.txt", _tileSize);
-	
+
 		player = make_shared<Entity>();
 		auto s = player->addComponent<ShapeComponent>();
 		s->setShape<sf::CircleShape>(_playerSize);
@@ -92,14 +92,10 @@ void GameScene::load() {
 		vector<Vector2ul> tile = ls::findTiles(ls::TILE::START);
 		player->setPosition(Vector2f(ls::getTilePosition(tile[0]) + Vector2f(_playerSize, _playerSize)));
 		player->addComponent<PlayerMovementComponent>();
+		player->setPowerUp(false);
 
 		_ents.list.push_back(player);
 	}
-
-	const sf::Color ghost_cols[]{ {208, 62, 25},    // red Blinky
-								 {219, 133, 28},    // orange Clyde
-								 {70, 191, 238},    // cyan Inky
-								 {234, 130, 229} }; // pink Pinky
 
 	for (int i = 0; i < 4; ++i) {
 		auto ghost = make_shared<Entity>();
@@ -110,6 +106,7 @@ void GameScene::load() {
 		vector<Vector2ul> tile = ls::findTiles(ls::TILE::ENEMY);
 		ghost->setPosition(Vector2f(ls::getTilePosition(tile[i]) + Vector2f(_ghostSize, _ghostSize)));
 		ghost->addComponent<GhostMovementComponent>();
+		ghost->setName(ghost_name[i]);		
 
 		ghosts.push_back(ghost);
 		_ents.list.push_back(ghost);
@@ -127,7 +124,7 @@ void GameScene::load() {
 
 	//Setting up scoreText & scoreValueText
 	scoreText.setFont(font);
-	scoreText.setCharacterSize(20);	
+	scoreText.setCharacterSize(20);
 	scoreValueText.setFont(font);
 	scoreValueText.setCharacterSize(20);
 	// Formatting scoreText
@@ -149,17 +146,22 @@ void GameScene::update(double dt) {
 	//It is needed to leave some miliseconds between switches, otherwise it will
 	//take everystroke for everyframe since the game updates several times per
 	//second
-	Time timeElapsed2 = keboardTime.getElapsedTime();
-	if (timeElapsed2.asSeconds() >= 0.2) {
+	Time timeElapsed = changingColour.getElapsedTime();
+	Time timeElapsedKeyboard = keyboardTime.getElapsedTime();
+	if (timeElapsedKeyboard.asSeconds() >= 0.2) {
 		if (Keyboard::isKeyPressed(Keyboard::Space)) {
 			activeScene = menuScene;
-			timeElapsed2 += keboardTime.restart();
+			timeElapsedKeyboard += keyboardTime.restart();
 		}
 	}
 
 	for (auto& g : ghosts) {
-		if (length(g->getPosition() - player->getPosition()) < _ghostSize) {
+		if (length(g->getPosition() - player->getPosition()) < _ghostSize && !player->isPowerUp() && g->isAlive()) {
 			respawn();
+		}
+		if (length(g->getPosition() - player->getPosition()) < _ghostSize && player->isPowerUp() && g->isAlive()) {
+			g->setForDelete();
+			scoreValue += 1000;
 		}
 	}
 
@@ -168,6 +170,54 @@ void GameScene::update(double dt) {
 		if (n->isVisible()) {
 		}
 	}
+
+	if (player->isPowerUp()) {
+		auto p = _ents.list[0]->GetCompatibleComponent<ShapeComponent>();
+		auto compP = p.back();
+
+		for (auto& g : ghosts) {
+			auto ghost = g ->GetCompatibleComponent<ShapeComponent>();
+			auto compG = ghost.back();
+			compG->getShape().setFillColor(Color(Color::White));
+		}
+		timeElapsed = changingColour.getElapsedTime();
+		if (timeElapsed.asSeconds() > 0.1) {
+			compP->getShape().setFillColor(Color(Color::Yellow));
+		}
+		if (timeElapsed.asSeconds() > 0  && timeElapsed.asSeconds() < 0.1){
+			compP->getShape().setFillColor(Color(Color::Red));
+		}
+		if (timeElapsed.asSeconds() > 0.2) {
+			changingColour.restart();
+		}
+	}
+	if (!player->isPowerUp()) {
+		auto p = _ents.list[0]->GetCompatibleComponent<ShapeComponent>();
+		auto CompP = p.back();
+		CompP->getShape().setFillColor(Color(Color::Yellow));
+
+		for (auto& g : ghosts) {
+			auto ghost = g->GetCompatibleComponent<ShapeComponent>();
+			auto compG = ghost.back();
+			switch (g->getName()) {
+			case 'B':
+				compG->getShape().setFillColor(Color(ghost_cols[0]));
+				break;
+			case 'C':
+				compG->getShape().setFillColor(Color(ghost_cols[1]));
+				break;
+			case 'I':
+				compG->getShape().setFillColor(Color(ghost_cols[2]));
+				break;
+			case 'P':
+				compG->getShape().setFillColor(Color(ghost_cols[3]));
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
 	_ents.update(dt);
 	scoreValueText.setString(to_string(scoreValue));
 }
@@ -188,6 +238,10 @@ void GameScene::respawn() {
 	auto player_spawns = ls::findTiles(ls::START);
 	player->setPosition(ls::getTilePosition(player_spawns[0]) + Vector2f(_playerSize, _playerSize));
 	player->GetCompatibleComponent<ActorMovementComponent>()[0]->setSpeed(150.f);
+	auto comps = player->GetCompatibleComponent<PlayerMovementComponent>();
+	auto actComp = comps[0];
+	player->setPowerUp(false);
+	actComp->_isTimerFinished = true;
 
 	auto ghost_spawns = ls::findTiles(ls::ENEMY);
 	int i = 0;

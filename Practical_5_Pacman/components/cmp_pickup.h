@@ -12,11 +12,11 @@ private:
 	bool _isBig;
 public:
 	PickupComponent() = delete;
-	explicit PickupComponent(Entity* p, bool _isBig);
+	explicit PickupComponent(Entity* p, bool isBig);
 
 	void update(double dt) override;
 	void render() override;
-	bool isBig();
+	bool isBigNibble();
 	sf::Shape& getShape() const;
 
 	template <typename T, typename... Targs>
