@@ -2,7 +2,6 @@
 #include <iostream>
 #include "game.h"
 #include "Pacman.h"
-#include "main.h"
 #include "Renderer.h"
 #include "ecm.h"
 

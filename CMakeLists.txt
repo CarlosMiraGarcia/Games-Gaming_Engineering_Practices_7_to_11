@@ -14,6 +14,7 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY})
 #### Add External Dependencies ####
 add_subdirectory("lib/sfml")
 set(SFML_INCS "lib/sfml/include")
+set(B2D_INCS "lib/b2d/Box2D/")
 link_directories("${CMAKE_BINARY_DIR}/lib/sfml/lib")
 
 ## Tile loader lib
@@ -35,9 +36,6 @@ target_link_libraries(lib_ecm PRIVATE lib_maths)
 
 # B2D - Box2D phyics library
 add_subdirectory("lib/b2d/Box2D")
-#include_directories("lib/b2d/Box2D/")
-set(B2D_INCS "lib/b2d/Box2D/")
-link_directories("${CMAKE_BINARY_DIR}/lib/sfml/lib")
 
 #### Adding Res folder ####
 add_custom_target(copy_resources ALL COMMAND ${CMAKE_COMMAND} 
@@ -75,8 +73,10 @@ add_dependencies(Practical_5_Pacman copy_resources)
 
 #### Physics ####
 file(GLOB_RECURSE SOURCES Practical_6_Physics/*.cpp Practical_6_Physics/*.h)
-add_executable(Practical_6_Physics ${SOURCES} )
+add_executable(Practical_6_Physics ${SOURCES})
 target_include_directories(Practical_6_Physics SYSTEM PRIVATE ${SFML_INCS} ${B2D_INCS})
-target_link_libraries(Practical_6_Physics Box2D)
-add_dependencies(Practical_6_Physics copy_resources)
+target_link_libraries(Practical_6_Physics sfml-graphics Box2D lib_ecm)
+set(EXECUTABLES ${EXECUTABLES} Practical_6_Physics)
+
+
 

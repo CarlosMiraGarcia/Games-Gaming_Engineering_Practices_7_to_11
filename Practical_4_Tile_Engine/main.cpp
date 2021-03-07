@@ -20,7 +20,7 @@ void Load() {
 
 	ls::loadLevelFile("res/maze_2.txt", 100.f);
 	ls::setColor(ls::TILE::WALL, sf::Color::Blue);
-	;	vector<Vector2ul> tile = ls::findTiles(LevelSystem::TILE::START);
+	vector<Vector2ul> tile = ls::findTiles(LevelSystem::TILE::START);
 	player->setPosition(Vector2f(ls::getTilePosition(tile[0]) + Vector2f(_playerSize, _playerSize)));
 
 	// Print the level to the console
