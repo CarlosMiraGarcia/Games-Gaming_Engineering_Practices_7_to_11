@@ -135,7 +135,7 @@ sf::Vector2f LevelSystem::getTilePosition(sf::Vector2ul p) {
 
 std::vector<sf::Vector2ul> LevelSystem::findTiles(LevelSystem::TILE tile) {
 	auto tiles = vector<sf::Vector2ul>();
-	for (size_t i = 0; i <  _height * _width; ++i) {
+	for (size_t i = 0; i < _height * _width; ++i) {
 		if (_tiles[i] == tile) {
 			tiles.push_back({ i % _width, i / _width });
 		}

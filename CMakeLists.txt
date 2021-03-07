@@ -67,4 +67,10 @@ target_include_directories(Practical_5_Pacman SYSTEM PRIVATE ${SFML_INCS})
 target_link_libraries(Practical_5_Pacman sfml-graphics lib_tile_level_loader lib_ecm)
 add_dependencies(Practical_5_Pacman copy_resources)
 
+#### Physics ####
+file(GLOB_RECURSE SOURCES Practical_6_Physics/*.cpp Practical_5_Pacman/*.h)
+add_executable(Practical_6_Physics ${SOURCES} )
+target_include_directories(Practical_6_Physics SYSTEM PRIVATE ${SFML_INCS})
+target_link_libraries(Practical_6_Physics sfml-graphics lib_tile_level_loader lib_ecm)
+add_dependencies(Practical_6_Physics copy_resources)
 

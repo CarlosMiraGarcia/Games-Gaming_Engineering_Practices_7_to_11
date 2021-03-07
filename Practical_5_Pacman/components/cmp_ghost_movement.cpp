@@ -43,8 +43,8 @@ void GhostMovementComponent::update(double dt) {
 		break;
 
 	case ROTATING:
-		while (newDirection == badDirection || 
-			   LevelSystem::getTileAt(position + (Vector2f(newDirection) * _ghostSize)) == LevelSystem::WALL) {
+		while (newDirection == badDirection ||
+			LevelSystem::getTileAt(position + (Vector2f(newDirection) * _ghostSize)) == LevelSystem::WALL) {
 			auto dir = findPlayer(position);
 			newDirection = dir;
 		}
@@ -97,7 +97,7 @@ Vector2i GhostMovementComponent::findPlayer(Vector2f ghostPosition) {
 					}
 					else {
 						returnDirection = returnDirection * -1;
-					}					
+					}
 				}
 
 				else {
